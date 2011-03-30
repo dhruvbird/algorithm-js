@@ -26,7 +26,7 @@
 5. There is also a general Heap/PriorityQueue that can be constructed using 
 an existing array and a comparator:
 
-	var h = new algo.PriorityQueue([92, 19, 192, 11, 0, 3], algo.cmp_lt)
+	var h = new algo.PriorityQueue(algo.cmp_lt, [92, 19, 192, 11, 0, 3])
 
 
 
