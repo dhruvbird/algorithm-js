@@ -1,0 +1,19 @@
+{ "name": "algorithm"
+,"version": "0.0.1"
+,"main": "./algorithm.js"
+,"description": "A collection of Data Structures & Algorithms in javascript"
+,"author": "Dhruv Matani"
+,"dependencies": { }
+,"repositories": [{"type": "git"
+		  ,"path": "https://directidhruv@github.com/directidhruv/algorithm-js.git"
+		  }]
+,"homepage": "https://github.com/directidhruv/algorithm-js"
+,"bugs": "https://github.com/directidhruv/algorithm-js/issues"
+,"maintainers": [{"name": "Dhruv"
+		 ,"email": "dhruvbird@gmail.com"
+		 ,"web": "http://dhruvbird.com/"
+		 }]
+,"contributors": [ ]
+,"licenses": [{"type": "MIT"}]
+,"engine": "node"
+}
