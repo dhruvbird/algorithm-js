@@ -307,6 +307,8 @@ exports.heap_sort = function(repr, cmp) {
 // max:         O(1)
 // constructor: O(n log n)
 //
+// http://www.cs.otago.ac.nz/staffpriv/mike/Papers/MinMaxHeaps/MinMaxHeaps.pdf
+// 
 function MinMaxHeap(cmp, repr) {
 	this._cmp  = cmp;
 	this._repr = repr;
