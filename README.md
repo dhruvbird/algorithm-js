@@ -24,7 +24,7 @@
 
 3. MinHeap Operations & Properties:
     * (constructor) takes in an (possibly non-empty) array which will be used for storage
-    * [push/insert](1, 2, 3, 4): Pushes 4 integers into the heap - O(log n)
+    * push/insert(1, 2, 3, 4): Pushes 4 integers into the heap - O(log n)
     * pop(): Removes the smallest value from the heap and returns it - O(log n)
     * top: Returns the smallest value in the heap without removing it - O(1)
     * length: Returns the number of elements in the heap
@@ -39,7 +39,7 @@ a comparator and an existing array:
 6. MinMaxHeap/PriorityDequeue Operations & Properties:
     * (constructor) takes in a less-than comparator and an (possibly non-empty) array 
     which will be used for storage
-    * [push/insert](1, 2, 3, 4): Pushes 4 integers into the heap - O(log n)
+    * push/insert(1, 2, 3, 4): Pushes 4 integers into the heap - O(log n)
     * pop_min(): Removes the smallest value from the heap and returns it - O(log n)
     * pop_max(): Removes the largest value from the heap and returns it - O(log n)
     * min: Returns the smallest value in the heap without removing it - O(1)
