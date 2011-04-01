@@ -14,15 +14,14 @@
 function Queue() {
 	this._push_stack = [];
 	this._pop_stack  = [];
+
+	this.push.apply(this, arguments);
 }
 
 Queue.prototype = {
 	push: function(elem) {
-		this._push_stack.push(elem);
-		if (arguments.length > 1) {
-			for (var i = 1; i < arguments.length; ++i) {
-				this._push_stack.push(arguments[i]);
-			}
+		for (var i = 0; i < arguments.length; ++i) {
+			this._push_stack.push(arguments[i]);
 		}
 	}, 
 	pop: function() {
@@ -30,11 +29,11 @@ Queue.prototype = {
 			console.error("INVALID POP");
 			throw { message: "Nothing in the Queue to pop" };
 		}
-		var _top = this.top();
+		var _top = this.top;
 		this._pop_stack.pop();
 		return _top;
 	}, 
-	top: function() {
+	get top() {
 		if (this.length === 0) {
 			return;
 		}
@@ -83,9 +82,9 @@ function Stack() {
 }
 
 Stack.prototype = new Array();
-Stack.prototype.top = function() {
+Stack.prototype.__defineGetter__('top', function () {
 	return this.slice(this.length - 1)[0];
-}
+});
 
 exports.Stack = Stack;
 exports.LIFO  = Stack;
@@ -172,7 +171,7 @@ function Heap(cmp, repr) {
 
 Heap.prototype = {
 	pop: function() {
-		var _top = this.top();
+		var _top = this.top;
 
 		// console.log("REPR:", this._repr);
 
@@ -185,19 +184,14 @@ Heap.prototype = {
 		}
 		return _top;
 	}, 
-	top: function() {
+	get top() {
 		return this._repr[0];
 	}, 
 	push: function(elem) {
-		this._repr.push(elem);
-		this._bubble_up(this.length - 1);
-		if (arguments.length > 1) {
-			for (var i = 1; i < arguments.length; ++i) {
-				this._repr.push(arguments[i]);
-				this._bubble_up(this.length - 1);
-			}
+		for (var i = 0; i < arguments.length; ++i) {
+			this._repr.push(arguments[i]);
+			this._bubble_up(this.length - 1);
 		}
-
 	}, 
 	get length() {
 		return this._repr.length;
@@ -209,9 +203,7 @@ Heap.prototype = {
 		}
 	}, 
 	_swap: function(pi, ci) {
-		var t          = this._repr[pi];
-		this._repr[pi] = this._repr[ci];
-		this._repr[ci] = t;
+		return _swap(this._repr, pi, ci);
 	}, 
 	_bubble_up: function(i) {
 		// var don = this._repr[i] == 21;
@@ -310,14 +302,269 @@ exports.heap_sort = function(repr, cmp) {
 // http://www.cs.otago.ac.nz/staffpriv/mike/Papers/MinMaxHeaps/MinMaxHeaps.pdf
 // 
 function MinMaxHeap(cmp, repr) {
-	this._cmp  = cmp;
-	this._repr = repr;
+	this._cmp = cmp || cmp_lt;
+	this._repr = repr || [ ];
+
+	if (this._repr.length > 0) {
+		this._make_heap();
+	}
 }
 
 MinMaxHeap.prototype = {
+	_make_heap: function() {
+		for (var i = 0; i < this._repr.length; ++i) {
+			this._bubble_up(i);
+			// console.log(this._repr.slice(0, i+1).toString());
+		}
+	}, 
+
+	_is_level_min_level: function(level) {
+		return (level % 2) == 0;
+	}, 
+
+	_is_index_min_level: function(i) {
+		return this._is_level_min_level(parseInt(Math.log(i+1) / Math.log(2.0)));
+	}, 
+
+	_parent_index: function(i) {
+		return ((i % 2) == 0 ? i - 2 : i - 1) / 2;
+	}, 
+	
+	_grand_parent_index: function(i) {
+		return this._parent_index(this._parent_index(i));
+	},
+
+	_bubble_up: function(i) {
+		if (i == 0) {
+			return;
+		}
+
+		var pi = this._parent_index(i);
+
+		if (this._is_index_min_level(i)) {
+			if (this._repr[i] > this._repr[pi]) {
+				_swap(this._repr, i, pi);
+				this._bubble_up_max(pi);
+			}
+			else {
+				this._bubble_up_min(i);
+			}
+		}
+		else {
+			if (this._repr[i] < this._repr[pi]) {
+				_swap(this._repr, i, pi);
+				this._bubble_up_min(pi);
+			}
+			else {
+				this._bubble_up_max(i);
+			}
+		}
+	}, 
+
+	_bubble_up_min: function(i) {
+		var gpi = this._grand_parent_index(i);
+		if (i == 0 || gpi < 0) {
+			return;
+		}
+
+		if (this._repr[i] < this._repr[gpi]) {
+			_swap(this._repr, i, gpi);
+			this._bubble_up_min(gpi);
+		}
+	}, 
+
+	_bubble_up_max: function(i) {
+		var gpi = this._grand_parent_index(i);
+		if (i == 0 || gpi < 0) {
+			return;
+		}
+
+		if (this._repr[i] > this._repr[gpi]) {
+			_swap(this._repr, i, gpi);
+			this._bubble_up_max(gpi);
+		}
+	}, 
+
+	_get_candidate_nodes: function() {
+		var ret = [ ];
+		for (var i = 0; i < arguments.length; ++i) {
+			var index = arguments[i];
+			ret.push({
+				index: index, 
+				value: this._repr[index]
+			});
+		}
+		return ret;
+	}, 
+
+	_get_valid_children_and_grand_children: function(i) {
+		var opts = this._get_candidate_nodes(i*2+1, i*2+2, 
+			(i*2+1)*2 + 1, (i*2+1)*2 + 2, 
+			(i*2+2)*2 + 1, (i*2+2)*2 + 2);
+
+		var self = this;
+		
+		opts = opts.filter(function(opt) {
+			return opt.index < self._repr.length;
+		});
+
+		return opts;
+	}, 
+
+	_bubble_down: function(i) {
+		if (this._is_index_min_level(i)) {
+			this._bubble_down_min(i);
+		}
+		else {
+			this._bubble_down_max(i);
+		}
+	}, 
+
+	_bubble_down_min: function(i) {
+		var opts = this._get_valid_children_and_grand_children(i);
+		var self = this;
+
+		opts.sort(function(lhs, rhs) {
+			return js_cmp_gen(self._cmp)(lhs.value, rhs.value);
+		});
+
+		if (opts.length == 0) {
+			return;
+		}
+
+		var opt = opts[0];
+
+		if (opt.index < i*2+3 /* Is i a parent or grandparent of opt? */) {
+			// Parent
+			if (opt.value < this._repr[i]) {
+				_swap(this._repr, opt.index, i);
+			}
+		}
+		else {
+			// Grandparent
+			if (opt.value < this._repr[i]) {
+				_swap(this._repr, opt.index, i);
+				var _pi = this._parent_index(opt.index);
+				if (this._repr[_pi] < this._repr[opt.index]) {
+					_swap(this._repr, opt.index, _pi);
+				}
+				this._bubble_down_min(opt.index);
+			}
+		}
+	}, 
+
+	_bubble_down_max: function(i) {
+		var opts = this._get_valid_children_and_grand_children(i);
+		var self = this;
+
+		opts.sort(function(lhs, rhs) {
+			return js_cmp_gen(self._cmp)(lhs.value, rhs.value);
+		});
+
+		if (opts.length == 0) {
+			return;
+		}
+
+		var opt = opts[opts.length - 1];
+
+		if (opt.index < i*2+3 /* Is i a parent or grandparent of opt? */) {
+			// Parent
+			if (opt.value > this._repr[i]) {
+				_swap(this._repr, opt.index, i);
+			}
+		}
+		else {
+			// Grandparent
+			if (opt.value > this._repr[i]) {
+				_swap(this._repr, opt.index, i);
+				var _pi = this._parent_index(opt.index);
+				if (this._repr[_pi] > this._repr[opt.index]) {
+					_swap(this._repr, opt.index, _pi);
+				}
+				this._bubble_down_max(opt.index);
+			}
+		}
+	}, 
+	
+	_move_from_end: function(index) {
+		if (index < this.length - 1) {
+			this._repr[index] = this._repr[this._repr.length - 1];
+		}
+		this._repr.pop();
+		if (index < this.length) {
+			this._bubble_down(index);
+		}
+	},
+
+	get length() {
+		return this._repr.length;
+	}, 
+
+	_min: function() {
+		return { index: 0, value: this._repr[0] };
+	}, 
+	
+	_max: function() {
+		if (this.length == 1) {
+			return this._min();
+		}
+
+		var opts = [
+			{ index: 1, value: this._repr[1] }, 
+			{ index: 2, value: this._repr[2] }
+		];
+		var self = this;
+
+		opts = opts.filter(function(opt) {
+			return opt.index < self._repr.length;
+		});
+
+		opts.sort(function(lhs, rhs) {
+			return js_cmp_gen(self._cmp)(lhs.value, rhs.value);
+		});
+
+		if (opts.length == 0) {
+			return;
+		}
+
+		var opt = opts[opts.length - 1];
+
+		return opt;
+	},
+
+	get min() {
+		return this._min().value;
+	}, 
+
+	get max() {
+		return this._max().value;
+	}, 
+
+	push: function(elem) {
+		for (var i = 0; i < arguments.length; ++i) {
+			this._repr.push(arguments[i]);
+			this._bubble_up(this._repr.length - 1);
+		}
+	},
+
+	pop_min: function() {
+		var _min = this._min();
+		this._move_from_end(_min.index);
+		return _min.value;
+	}, 
+	
+	pop_max: function() {
+		var _max = this._max();
+		this._move_from_end(_max.index);
+		return _max.value;
+	}
+
 };
 
+MinMaxHeap.prototype.insert = MinMaxHeap.prototype.push;
 
+exports.MinMaxHeap      = MinMaxHeap;
+exports.PriorityDequeue = MinMaxHeap;
 
 
 

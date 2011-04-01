@@ -6,7 +6,7 @@ q.push(1, 2, 3, 4, 5, 6);
 assert(q.pop() == 1, "pop failed");
 
 q.push(10, 20, 30, 40, 50, 60);
-assert(q.top() == 2, "top failed");
+assert(q.top == 2, "top failed");
 
 assert(q.length == 11, "length failed");
 
@@ -109,3 +109,23 @@ var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1
 var pidx = algo.partition(r2, 3003);
 assert(pidx == 21);
 
+var mmh = new algo.MinMaxHeap(algo.cmp_lt, r2);
+
+assert(mmh.max == 1992);
+assert(mmh.min == -2);
+
+var sorted_mmh = [ ];
+while (mmh.length > 0) {
+	sorted_mmh.push(mmh.pop_max());
+}
+
+assert(algo.is_sorted(sorted_mmh, algo.cmp_gt));
+
+
+mmh = new algo.MinMaxHeap(algo.cmp_lt, r2);
+sorted_mmh = [ ];
+while (mmh.length > 0) {
+	sorted_mmh.push(mmh.pop_min());
+}
+
+assert(algo.is_sorted(sorted_mmh, algo.cmp_lt));

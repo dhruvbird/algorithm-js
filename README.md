@@ -4,29 +4,49 @@
 
 
 ###Data Structures:
-1. Queue/FIFO Operations:
+1. Queue/FIFO Operations & Properties:
+    * (constructor) pushes every argument that is passed to into the queue
     * push(1, 2, 3, 4): Pushes 4 integers into the queue - O(1)
     * pop(): Removes the earliest value from the queue and returns it - O(1)
-    * top(): Returns the earliest pushed value without removing it - O(1)
+    * top: Returns the earliest pushed value without removing it - O(1)
+    * length: Returns the number of elements in the queue
 
-2. Stack/FILO/LIFO Operations:
+        var q = new algo.Queue(1, 2, 3, 4);
+
+
+2. Stack/FILO/LIFO Operations & Properties:
+    * (constructor) pushes every argument that is passed to into the queue
     * push(1, 2, 3, 4) - O(1)
     * pop() - O(1)
-    * top() - O(1)
+    * top   - O(1)
     * Indexing (like an array) - O(1)
+    * length: Returns the number of elements in the stack
 
-3. MinHeap Operations:
+3. MinHeap Operations & Properties:
     * (constructor) takes in an (possibly non-empty) array which will be used for storage
-    * push(1, 2, 3, 4): Pushes 4 integers into the heap - O(log n)
+    * [push/insert](1, 2, 3, 4): Pushes 4 integers into the heap - O(log n)
     * pop(): Removes the smallest value from the heap and returns it - O(log n)
-    * top(): Returns the smallest value in the heap without removing it - O(1)
+    * top: Returns the smallest value in the heap without removing it - O(1)
+    * length: Returns the number of elements in the heap
 
 4. Similarly, we have MaxHeap as well.
 
 5. There is also a general Heap/PriorityQueue that can be constructed using 
-an existing array and a comparator:
+a comparator and an existing array:
 
 	var h = new algo.PriorityQueue(algo.cmp_lt, [92, 19, 192, 11, 0, 3])
+
+6. MinMaxHeap/PriorityDequeue Operations & Properties:
+    * (constructor) takes in a less-than comparator and an (possibly non-empty) array 
+    which will be used for storage
+    * [push/insert](1, 2, 3, 4): Pushes 4 integers into the heap - O(log n)
+    * pop_min(): Removes the smallest value from the heap and returns it - O(log n)
+    * pop_max(): Removes the largest value from the heap and returns it - O(log n)
+    * min: Returns the smallest value in the heap without removing it - O(1)
+    * max: Returns the largest value in the heap without removing it - O(1)
+    * length: Returns the number of elements in the heap
+
+        var mmh = new algo.MinMaxHeap(algo.cmp_lt, [45, 2, 54, 12, 21, 99, 1]);
 
 
 
@@ -75,8 +95,14 @@ is a heap according to 'cmp_lt'. If 'cmp_gt' is used, then is_heap will check
 range for being in Max-Heap order. If 'cmp_lt' is used, it will check for 
 range to be in Min-Heap order.
 
+11. heap_sort(input, cmp): Sorts 'input' using comparator 'cmp'. Sorts the
+array 'input' in-place. Returns the sorted array. The array passed as 'input' 
+WILL be modified. This is an unstable sort - O(n log n)
+
 
 ###Comparators:
+All Comparators return either true or false only.
+
 1. cmp_lt(lhs, rhs): Returns whatever lhs < rhs returns
 
 2. cmp_gt(lhs, rhs): Uses < to do a > comparison

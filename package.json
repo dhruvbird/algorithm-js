@@ -1,5 +1,5 @@
 { "name": "algorithm"
-,"version": "0.0.1"
+,"version": "0.0.2"
 ,"main": "./algorithm.js"
 ,"description": "A collection of Data Structures & Algorithms in javascript"
 ,"author": "Dhruv Matani"
