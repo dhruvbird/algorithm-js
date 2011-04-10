@@ -594,6 +594,102 @@ exports.MinMaxHeap      = MinMaxHeap;
 exports.PriorityDequeue = MinMaxHeap;
 
 
+function Trie() {
+	this.root = { lf: false };
+	this._length = 0;
+}
+
+Trie.prototype = {
+	insert: function() {
+		for (var i = 0; i < arguments.length; ++i) {
+			this._insert(arguments[i]);
+		}
+	}, 
+	
+	_insert: function(s) {
+		var r = this.root;
+		for (var i = 0; i < s.length; ++i) {
+			var ch = s[i];
+			if (!(ch in r)) {
+				r[ch] = { lf: false };
+			}
+			r = r[ch];
+		}
+
+		if (!r.lf) {
+			r.lf = true;
+			this._length += 1;
+		}
+
+	}, 
+
+	remove_many: function() {
+		var ret = 0;
+		for (var i = 0; i < arguments.length; ++i) {
+			ret += (this.remove(arguments[i]) ? 1 : 0);
+		}
+		return ret;
+	}, 
+
+	remove: function(s) {
+		var stat = this._remove(s, this.root);
+		this._length -= (stat ? 1 : 0);
+		return stat;
+	}, 
+
+	_remove: function(s, r) {
+		if (!r) {
+			// console.log("r is falsy, s ==", s);
+			return false;
+		}
+
+		if (s.length == 0) {
+			var lf = r.lf;
+			r.lf = false;
+			return lf;
+		}
+
+		var _r = r[s[0]];
+		var stat = this._remove(s.substring(1), _r);
+
+		if (!stat) {
+			// console.log("Error removing:", s[0], "from", s, _r);
+			return false;
+		}
+
+		if (Object.keys(_r).length == 1 && !_r.lf) {
+			// We can drop this node
+			delete r[s[0]];
+		}
+
+		return true;
+	}, 
+
+	exists: function(s) {
+		return this._exists(s, this.root);
+	}, 
+
+	_exists: function(s, r) {
+		if (!r) {
+			return false;
+		}
+
+		if (s.length == 0) {
+			return r.lf;
+		}
+
+		var _r = r[s[0]];
+		return this._exists(s.substring(1), _r);
+	}, 
+	
+	get length() {
+		return this._length;
+	}
+
+};
+
+
+exports.Trie = Trie;
 
 
 

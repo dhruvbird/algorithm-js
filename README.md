@@ -48,6 +48,19 @@ a comparator and an existing array:
 
         var mmh = new algo.MinMaxHeap(algo.cmp_lt, [45, 2, 54, 12, 21, 99, 1]);
 
+7. Trie Operations & Properties:
+    * insert('str1', 'str2', 'str3'): Pushes 3 strings into the Trie
+    * remove('str2'): Removes 'str2' from the Trie. Retrns TRUE if 'str2' was
+    removed, and FALSE otherwise
+    * remove_many('str1', 'str2', 'str4'): Removes 3 strings from the Trie. Retruns
+    the number of items actually removed
+    * exists('str4'): Retutns TRUE or FALSE depending upon whether 'str4' exists
+    in the trie or not.
+    * length: Returns the number of elements in the Trie
+
+    A Trie is like a set. Adding an element multiple times does not increase the
+    length of the Trie by more than 1.
+
 
 
 ###Algorithms:

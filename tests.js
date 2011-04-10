@@ -22,8 +22,10 @@
  */
 
 
-var algo = require('./algorithm.js');
+var algo   = require('./algorithm.js');
 var assert = require('assert').ok;
+var util   = require('util');
+
 
 var q = new algo.Queue();
 q.push(1, 2, 3, 4, 5, 6);
@@ -153,3 +155,31 @@ while (mmh.length > 0) {
 }
 
 assert(algo.is_sorted(sorted_mmh, algo.cmp_lt));
+
+var t = new algo.Trie();
+t.insert('alros', 'algos', 'alg', 'GET', 'GEL', 'POST');
+
+// console.log(util.inspect(t, false, 10));
+assert(t.length == 6);
+
+assert(t.exists('GE') == false);
+assert(t.exists('GET') == true);
+assert(t.exists('') == false);
+
+assert(t.remove('GE') == false);
+assert(t.remove('GET') == true);
+
+// console.log("Trie length:", t.length);
+assert(t.length == 5);
+
+assert(t.exists('GE') == false);
+assert(t.exists('GET') == false);
+assert(t.exists('GEL') == true);
+
+// console.log(util.inspect(t, false, 10));
+
+assert(t.remove_many('alros', 'algos', 'alg', 'GET', 'GEL', 'POST') == 5);
+
+// console.log(util.inspect(t, false, 10));
+
+assert(t.length == 0);
