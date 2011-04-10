@@ -325,8 +325,11 @@ exports.heap_sort = function(repr, cmp) {
 //
 // http://www.cs.otago.ac.nz/staffpriv/mike/Papers/MinMaxHeaps/MinMaxHeaps.pdf
 // 
-function MinMaxHeap(cmp, repr) {
-	this._cmp = cmp || cmp_lt;
+// Note: lt MUST be a < comparator
+//
+function MinMaxHeap(lt, repr) {
+	this._lt   = lt || cmp_lt;
+	this._gt   = cmp_gt_gen(this._lt);
 	this._repr = repr || [ ];
 
 	if (this._repr.length > 0) {
@@ -366,7 +369,7 @@ MinMaxHeap.prototype = {
 		var pi = this._parent_index(i);
 
 		if (this._is_index_min_level(i)) {
-			if (this._repr[i] > this._repr[pi]) {
+			if (this._gt(this._repr[i], this._repr[pi])) {
 				_swap(this._repr, i, pi);
 				this._bubble_up_max(pi);
 			}
@@ -375,7 +378,7 @@ MinMaxHeap.prototype = {
 			}
 		}
 		else {
-			if (this._repr[i] < this._repr[pi]) {
+			if (this._lt(this._repr[i], this._repr[pi])) {
 				_swap(this._repr, i, pi);
 				this._bubble_up_min(pi);
 			}
@@ -391,7 +394,7 @@ MinMaxHeap.prototype = {
 			return;
 		}
 
-		if (this._repr[i] < this._repr[gpi]) {
+		if (this._lt(this._repr[i], this._repr[gpi])) {
 			_swap(this._repr, i, gpi);
 			this._bubble_up_min(gpi);
 		}
@@ -403,7 +406,7 @@ MinMaxHeap.prototype = {
 			return;
 		}
 
-		if (this._repr[i] > this._repr[gpi]) {
+		if (this._gt(this._repr[i], this._repr[gpi])) {
 			_swap(this._repr, i, gpi);
 			this._bubble_up_max(gpi);
 		}
@@ -449,7 +452,7 @@ MinMaxHeap.prototype = {
 		var self = this;
 
 		opts.sort(function(lhs, rhs) {
-			return js_cmp_gen(self._cmp)(lhs.value, rhs.value);
+			return js_cmp_gen(self._lt)(lhs.value, rhs.value);
 		});
 
 		if (opts.length == 0) {
@@ -482,7 +485,7 @@ MinMaxHeap.prototype = {
 		var self = this;
 
 		opts.sort(function(lhs, rhs) {
-			return js_cmp_gen(self._cmp)(lhs.value, rhs.value);
+			return js_cmp_gen(self._lt)(lhs.value, rhs.value);
 		});
 
 		if (opts.length == 0) {
@@ -544,7 +547,7 @@ MinMaxHeap.prototype = {
 		});
 
 		opts.sort(function(lhs, rhs) {
-			return js_cmp_gen(self._cmp)(lhs.value, rhs.value);
+			return js_cmp_gen(self._lt)(lhs.value, rhs.value);
 		});
 
 		if (opts.length == 0) {
@@ -589,7 +592,6 @@ MinMaxHeap.prototype.insert = MinMaxHeap.prototype.push;
 
 exports.MinMaxHeap      = MinMaxHeap;
 exports.PriorityDequeue = MinMaxHeap;
-
 
 
 
@@ -825,7 +827,9 @@ exports.upper_bound      = upper_bound;
 exports.equal_range      = equal_range;
 exports.binary_search    = binary_search;
 exports.partition        = partition;
-exports.stable_partition = partition;
+exports.stable_partition = stable_partition;
 exports.merge            = merge;
 exports.is_sorted        = is_sorted;
 exports.is_heap          = is_heap;
+
+// TODO: String processing algorithms
