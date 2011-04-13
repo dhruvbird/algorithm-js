@@ -594,6 +594,14 @@ exports.MinMaxHeap      = MinMaxHeap;
 exports.PriorityDequeue = MinMaxHeap;
 
 
+
+//
+// A Trie has the following operations:
+// insert:      O(1ength of string to be inserted)
+// remove:      O(1ength of string to be removed)
+// remove_many: O(items to be removed * avg. length of each item)
+// forEach:     O(n)
+//
 function Trie() {
 	this.root = { lf: false };
 	this._length = 0;
@@ -684,6 +692,35 @@ Trie.prototype = {
 	
 	get length() {
 		return this._length;
+	}, 
+
+	_forEach: function(r, proc, accum, i) {
+		if (!r) {
+			return 0;
+		}
+
+		var _i = 0;
+		if (r.lf) {
+			proc(accum.join(''), _i + i);
+			_i += 1;
+		}
+
+		var keys = Object.keys(r);
+		keys.sort();
+		for (var index in keys) {
+			var ch = keys[index];
+			if (ch != 'lf') {
+				accum.push(ch);
+				_i += this._forEach(r[ch], proc, accum, _i + i);
+				accum.pop();
+			}
+		}
+
+		return _i;
+	}, 
+
+	forEach: function(proc) {
+		this._forEach(this.root, proc, [], 0);
 	}
 
 };

@@ -159,6 +159,30 @@ assert(algo.is_sorted(sorted_mmh, algo.cmp_lt));
 var t = new algo.Trie();
 t.insert('alros', 'algos', 'alg', 'GET', 'GEL', 'POST');
 
+var tiv = [ ];
+t.forEach(function(e, i) {
+	tiv.push({ value: e, index: i });
+});
+
+assert(tiv[0].value === "GEL");
+assert(tiv[0].index === 0);
+
+assert(tiv[1].value === "GET");
+assert(tiv[1].index === 1);
+
+assert(tiv[2].value === "POST");
+assert(tiv[2].index === 2);
+
+assert(tiv[3].value === "alg");
+assert(tiv[3].index === 3);
+
+assert(tiv[4].value === "algos");
+assert(tiv[4].index === 4);
+
+assert(tiv[5].value === "alros");
+assert(tiv[5].index === 5);
+
+
 // console.log(util.inspect(t, false, 10));
 assert(t.length == 6);
 
