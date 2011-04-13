@@ -5,7 +5,7 @@
 
 ###Data Structures:
 1. Queue/FIFO Operations & Properties:
-    * (constructor) pushes every argument that is passed to into the queue
+    * (constructor) pushes every argument that is passed into the queue
     * push(1, 2, 3, 4): Pushes 4 integers into the queue - O(1)
     * pop(): Removes the earliest value from the queue and returns it - O(1)
     * top: Returns the earliest pushed value without removing it - O(1)
@@ -15,7 +15,7 @@
 
 
 2. Stack/FILO/LIFO Operations & Properties:
-    * (constructor) pushes every argument that is passed to into the queue
+    * (constructor) pushes every argument that is passed into the stack
     * push(1, 2, 3, 4) - O(1)
     * pop() - O(1)
     * top   - O(1)
@@ -56,6 +56,10 @@ a comparator and an existing array:
     the number of items actually removed
     * exists('str4'): Retutns TRUE or FALSE depending upon whether 'str4' exists
     in the trie or not.
+    * forEach(callback): Iterates through every element of the Trie in lexicographically
+    non-increasing order. The callback gets 2 parameters: The value and the index in
+    the lexicographic order of the traversal. (Check the tests.js file for an example
+    of this in action)
     * length: Returns the number of elements in the Trie
 
     A Trie is like a set. Adding an element multiple times does not increase the
