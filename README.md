@@ -72,8 +72,7 @@ a comparator and an existing array:
       representative Set
     * length: Returns the number of elements that the representative Set of this
       Set has under it
-
-    You can find more information about the Disjoint Set Data Structure on these pages:
+    * You can find more information about the Disjoint Set Data Structure on these pages:
         * https://secure.wikimedia.org/wikipedia/en/wiki/Disjoint-set_data_structure
         * http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=disjointDataStructure
 
