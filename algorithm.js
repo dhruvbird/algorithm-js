@@ -597,8 +597,8 @@ exports.PriorityDequeue = MinMaxHeap;
 
 //
 // A Trie has the following operations:
-// insert:      O(1ength of string to be inserted)
-// remove:      O(1ength of string to be removed)
+// insert:      O(length of string to be inserted)
+// remove:      O(length of string to be removed)
 // remove_many: O(items to be removed * avg. length of each item)
 // forEach:     O(n)
 //
@@ -727,6 +727,66 @@ Trie.prototype = {
 
 
 exports.Trie = Trie;
+
+
+//
+// The Disjoint Set Data Structure is explained here:
+//
+// https://secure.wikimedia.org/wikipedia/en/wiki/Disjoint-set_data_structure
+// and here:
+// http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=disjointDataStructure
+//
+// and this implementation supports the following operations:
+//
+// create:         O(1) - The constructor create a DisjointSet with a single element
+// representative: O(n) (worst case) - Returns the representative Set for this Set
+// union:          O(1) - UNIONs 2 sets into one
+//
+function DisjointSet(value) {
+    this._length = 1;
+    this.value = value;
+    this.parent = this;
+    // console.log("Set ctor:", this);
+}
+
+DisjointSet.prototype = {
+    representative: function() {
+	if (this.parent === this) {
+	    return this;
+	}
+
+	var p = this.parent.representative();
+	this.parent = p;
+	return p;
+    }, 
+
+    union: function(other_set) {
+	var this_rep  = this.representative();
+	var other_rep = other_set.representative();
+	// console.log("this_rep, other_rep:", this_rep, other_rep);
+
+	if (this_rep === other_rep) {
+	    return this_rep;
+	}
+
+	// console.log("other_rep.length:", other_rep.length);
+	this_rep._length += other_rep.length;
+	other_rep.parent = this_rep;
+
+	// console.log("union::returning:", this_rep);
+	return this_rep;
+    }, 
+
+    get length() {
+	var len = this.representative()._length;
+	// console.log("length:", len);
+	return len;
+    }
+};
+
+
+exports.DisjointSet = DisjointSet;
+
 
 
 

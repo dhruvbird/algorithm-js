@@ -207,3 +207,27 @@ assert(t.remove_many('alros', 'algos', 'alg', 'GET', 'GEL', 'POST') == 5);
 // console.log(util.inspect(t, false, 10));
 
 assert(t.length == 0);
+
+function test_set(n) {
+    var set = null;
+    var hash = { };
+    for (var i = 0; i < n; ++i) {
+	var tmp = new algo.DisjointSet(i);
+	hash[i] = tmp;
+
+	if (!set) {
+	    set = tmp;
+	}
+	else {
+	    set = set.union(tmp);
+	}
+	// console.log("make_set::set:", set);
+    }
+    return hash;
+}
+
+var hash = test_set(10);
+var keys = Object.keys(hash);
+keys.forEach(function(key) {
+    assert(hash[key].parent === hash[0]);
+});

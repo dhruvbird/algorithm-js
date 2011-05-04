@@ -65,6 +65,17 @@ a comparator and an existing array:
     A Trie is like a set. Adding an element multiple times does not increase the
     length of the Trie by more than 1.
 
+8. Disjoint Set Operations & Properties:
+    * constructor(value): Create a DisjointSet object with a single element 'value'
+    * representative: Returns the representative Set for the current Set
+    * union: Meld 2 DisjointSet objects into one so that they have the same 
+      representative Set
+    * length: Returns the number of elements that the representative Set of this
+      Set has under it
+
+    You can find more information about the Disjoint Set Data Structure on these pages:
+    * https://secure.wikimedia.org/wikipedia/en/wiki/Disjoint-set_data_structure
+    * http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=disjointDataStructure
 
 
 ###Algorithms:
