@@ -89,7 +89,7 @@ a comparator and an existing array:
     * min:           O(log n)
     * max:           O(log n)
     * length:        The total number of elements in the Tree. O(1)
-    * height:        The height of the longest path from root to leaf. O(1)
+    * height:        The length of the longest path from root to leaf. O(1)
     * clear:         Empty the Tree. O(1)
     * You can find more information about the AVL Tree Data Structure on these pages:
         * http://en.wikipedia.org/wiki/AVL_tree
