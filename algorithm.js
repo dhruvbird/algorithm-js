@@ -1002,6 +1002,8 @@ AVLTree.prototype = {
 	}
     }, 
 
+    // TODO: Add methods successor & predecessor so that external consumers
+    // can also use them
     _successor_of: function(node) {
 	// FIXME: Make it work for all sorts of nodes.
 	// Currently, this function requires 'node' to have a right child
