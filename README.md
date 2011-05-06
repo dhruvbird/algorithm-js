@@ -84,6 +84,8 @@ a comparator and an existing array:
       O(log n)
     * forEach(proc): Iterate over every element in the tree in sorted order 
       (in-order traversal). O(n)
+    * toGraphviz():  Return a string that can be fed to the Graphviz tool to display
+      the AVL Tree as it currently looks. O(n)
     * min:           O(log n)
     * max:           O(log n)
     * length:        The total number of elements in the Tree. O(1)
