@@ -1031,6 +1031,9 @@ AVLTree.prototype = {
 	return !!node.right;
     }, 
 
+    // TODO: Provide a set of "hook" methods to the user so that the user may
+    // add custom fields to the AVLTreeNode. Useful for doing stuff like:
+    // sum, min, max in O(1)
     _update_metadata: function(node) {
 	if (!node) {
 	    return;
