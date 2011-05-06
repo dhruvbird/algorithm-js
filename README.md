@@ -76,6 +76,24 @@ a comparator and an existing array:
         * https://secure.wikimedia.org/wikipedia/en/wiki/Disjoint-set_data_structure
         * http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=disjointDataStructure
 
+9. AVL Tree Operations & Properties:
+    * insert(value): O(log n)
+    * remove(value): O(log n)
+    * find(value):   O(log n)
+    * find_by_rank(k): Locate the k'th smallest element in the Tree. 1 <= k <= Tree.length. 
+      O(log n)
+    * forEach(proc): Iterate over every element in the tree in sorted order 
+      (in-order traversal). O(n)
+    * min:           O(log n)
+    * max:           O(log n)
+    * length:        The total number of elements in the Tree. O(1)
+    * height:        The height of the longest path from root to leaf. O(1)
+    * clear:         Empty the Tree. O(1)
+    * You can find more information about the AVL Tree Data Structure on these pages:
+        * http://en.wikipedia.org/wiki/AVL_tree
+        * http://en.wikipedia.org/wiki/Tree_rotation
+        * http://closure-library.googlecode.com/svn/docs/closure_goog_structs_avltree.js.source.html
+
 
 ###Algorithms:
 1. range(range/array, start index, one after end index): Retuns a range of 

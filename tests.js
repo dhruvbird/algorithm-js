@@ -231,3 +231,69 @@ var keys = Object.keys(hash);
 keys.forEach(function(key) {
     assert(hash[key].parent === hash[0]);
 });
+
+
+function is_a_BST(t) {
+    var a = [ ];
+    t.forEach(function(v) {
+	a.push(v);
+    });
+    // console.log("a:", a);
+    return algo.is_sorted(a);
+}
+
+function test_avl_tree() {
+    var t = new algo.AVLTree();
+    t.insert(100);
+    t.insert(200);
+    t.insert(50);
+    t.insert(20);
+    t.insert(10);
+    t.insert(1);
+    t.insert(2);
+    t.insert(3);
+
+    // console.log("\nTree after insertion:", util.inspect(t.root, false, 10));
+
+    // console.log(t.toGraphviz());
+    assert(is_a_BST(t));
+    var s = [ 1, 2, 3, 10, 20, 50, 100, 200 ];
+
+    for (var i = 0; i < t.length; ++i) {
+	// console.log("rank:", i+1, t.find_by_rank(i+1));
+	assert(t.find_by_rank(i+1) == s[i]);
+    }
+
+    t.remove(20);
+
+    // console.log(t.toGraphviz());
+    // console.log("\nTree after removal:", util.inspect(t.root, false, 10));
+
+    assert(is_a_BST(t));
+    var s = [ 1, 2, 3, 10, 50, 100, 200 ];
+
+    for (var i = 0; i < t.length; ++i) {
+	// console.log("rank:", i+1, t.find_by_rank(i+1));
+	assert(t.find_by_rank(i+1) == s[i]);
+    }
+
+    t = new algo.AVLTree();
+    for (var i = 0; i < 1000; ++i) {
+	t.insert(i);
+    }
+
+    // console.log("height, weight:", t.height, t.length);
+    assert(t.height == 10);
+    assert(t.length == 1000);
+
+    for (var i = 0; i < 1000; ++i) {
+	t.remove(i);
+    }
+
+    // console.log(t);
+    // console.log("height, weight:", t.height, t.length);
+    assert(t.height == 0);
+    assert(t.length == 0);
+}
+
+test_avl_tree();
