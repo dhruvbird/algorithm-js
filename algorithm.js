@@ -883,7 +883,7 @@ AVLTree.prototype = {
     },
 
     toGraphviz: function() {
-	// TODO: Returns a grpahviz consumable tree for plotting
+	// Returns a grpahviz consumable tree for plotting
 	var graph = [ 'fontname=arial', 'node [fontname=arial,fontsize=10]', 'digraph {' ];
 	var nodes = [ ];
 	var edges = [ ];
