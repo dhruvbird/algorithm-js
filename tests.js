@@ -286,6 +286,24 @@ function test_avl_tree() {
     assert(t.height == 10);
     assert(t.length == 1000);
 
+    var prev = 0;
+    var next = t.find(1);
+    while (next) {
+	// console.log(next.value);
+	assert(prev < next.value);
+	prev = next.value;
+	next = t.successor(next);
+    }
+
+    next = 1000;
+    prev = t.find(999);
+    while (prev) {
+	// console.log(next.value);
+	assert(prev.value < next);
+	next = prev.value;
+	prev = t.predecessor(prev);
+    }
+
     for (var i = 0; i < 1000; ++i) {
 	t.remove(i);
     }

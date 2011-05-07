@@ -1000,25 +1000,58 @@ AVLTree.prototype = {
 			// Has 2 children. Find the successor of this node, 
 			// delete that node and replace the value of this 
 			// node with that node's value
-			var replacement = this._successor_of(node);
+			var replacement = this.successor(node);
 			// console.log("replacement:", replacement);
 			this._remove(replacement);
 			node.value = replacement.value;
 		}
     }, 
 
-    // TODO: Add methods successor & predecessor so that external consumers
-    // can also use them
-    _successor_of: function(node) {
-		// FIXME: Make it work for all sorts of nodes.
-		// Currently, this function requires 'node' to have a right child
-		assert(!!node.right);
-		node = node.right;
-		while (node && node.left) {
-			node = node.left;
+	successor: function(node) {
+		if (node.right) {
+			node = node.right;
+			while (node && node.left) {
+				node = node.left;
+			}
+			return node;
 		}
-		return node;
-    }, 
+		else {
+			while (node.parent && this._is_right_child(node)) {
+				node = node.parent;
+			}
+			if (node.parent) {
+				// node is node.parent's left child
+				node = node.parent;
+			}
+			else {
+				node = null;
+			}
+			return node;
+		}
+	}, 
+
+	predecessor: function(node) {
+		if (node.left) {
+			node = node.left;
+			while (node && node.right) {
+				node = node.right;
+			}
+			return node;
+		}
+		else {
+			while (node.parent && this._is_left_child(node)) {
+				node = node.parent;
+			}
+			if (node.parent) {
+				// node is node.parent's right child
+				node = node.parent;
+			}
+			else {
+				node = null;
+			}
+			return node;
+		}
+	}, 
 
     _is_leaf: function(node) {
 		return !node.left && !node.right;
