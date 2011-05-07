@@ -84,6 +84,10 @@ a comparator and an existing array:
     * insert(value): O(log n)
     * remove(value): O(log n)
     * find(value):   O(log n)
+    * successor(node): Locate the successor of 'node'. The successor of a node is the smallest 
+      node in the Tree that is greater than the current node. O(log n)
+    * predecessor(node): Locate the predecessor of 'node'. The predecessor of a node is the greatest 
+      node in the Tree that is smallest than the current node. O(log n)
     * find_by_rank(k): Locate the k'th smallest element in the Tree. 1 <= k <= Tree.length. 
       O(log n)
     * forEach(proc): Iterate over every element in the tree in sorted order 

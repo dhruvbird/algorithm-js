@@ -811,6 +811,8 @@ function AVLTreeNode(value, parent, height, weight, left, right) {
 // find:   O(log g)
 // min:    O(log g)
 // max:    O(log g)
+// successor: O(log n)
+// predecessor: O(log n)
 // find_by_rank: O(log n)
 // clear:  O(1)
 // length: O(1)
