@@ -296,4 +296,78 @@ function test_avl_tree() {
     assert(t.length == 0);
 }
 
+function test_avl_tree_hooks() {
+    function obj_lt(lhs, rhs) {
+	var v1 = lhs.hasOwnProperty('key') ? lhs.key : lhs;
+	var v2 = rhs.hasOwnProperty('key') ? rhs.key : rhs;
+	return v1 < v2;
+    }
+
+    function summer(node) {
+	var _s = (node.left ? node.left.sum : 0) + 
+	    (node.right ? node.right.sum : 0) + node.value.key;
+	node.sum = _s;
+	// console.log("key, sum:", node.value.key, _s);
+    }
+
+    var t = new algo.AVLTree(obj_lt, summer);
+    t.insert({ key: 45, value: "frodo" });
+    t.insert({ key: 40, value: "harry" });
+    t.insert({ key: 55, value: "patricia" });
+    t.insert({ key: 105, value: "newton" });
+    t.insert({ key: 30, value: "einstein" });
+    t.insert({ key: 15, value: "charles" });
+    t.insert({ key: 100, value: "knuth" });
+
+    // console.log(t.root);
+    // console.log("Sum:", t.root.sum);
+    assert(t.root.sum == 390);
+
+    // console.log("Tree:", t.root);
+
+    function query_sum(node, value) {
+	// We do the query like we do for a Segment Tree
+	if (!node) {
+	    return 0;
+	}
+
+	// console.log("query_sum:", node.value.key);
+
+	if (node.value.key <= value) {
+	    var sub = node.right ? node.right.sum : 0;
+	    // console.log("sub:", sub);
+	    // console.log("_qs:", query_sum(node.right, value));
+	    return node.sum - sub + query_sum(node.right, value);
+	}
+	else {
+	    // node.value.key > value
+	    return query_sum(node.left, value);
+	}
+    }
+
+    // Sum of all numbers <= 40
+    var tmp = query_sum(t.root, 40);
+    assert(tmp == 85);
+
+    // Sum of all numbers <= 45
+    var tmp = query_sum(t.root, 45);
+    assert(tmp == 130);
+
+
+    // Sum of all numbers <= 300
+    var tmp = query_sum(t.root, 300);
+    assert(tmp == 390);
+
+    // Sum of all numbers <= 100
+    var tmp = query_sum(t.root, 100);
+    assert(tmp == 285);
+
+    // Sum of all numbers <= 5
+    var tmp = query_sum(t.root, 5);
+    assert(tmp == 0);
+
+}
+
 test_avl_tree();
+test_avl_tree_hooks();
+

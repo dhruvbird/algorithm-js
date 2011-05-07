@@ -77,6 +77,10 @@ a comparator and an existing array:
         * http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=disjointDataStructure
 
 9. AVL Tree Operations & Properties:
+    * constructor(cmp_lt, hook0, hook1, hook2, ...): The 1st argument is a < comparator.
+      All subsequent arguments are "hook" functions that are called when the tree is
+      rebalanced so that user-level metadata can be updated. See the function test_avl_tree_hooks() 
+      in the file 'tests.js' for an example on how to use hook functions.
     * insert(value): O(log n)
     * remove(value): O(log n)
     * find(value):   O(log n)

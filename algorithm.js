@@ -28,7 +28,6 @@
 //
 
 var assert = require('assert').ok;
-var util   = require('util');
 
 
 //
@@ -826,6 +825,10 @@ function AVLTreeNode(value, parent, height, weight, left, right) {
 function AVLTree(_cmp_lt) {
     this.cmp_lt = _cmp_lt || cmp_lt;
     this.cmp_eq = cmp_eq_gen(this.cmp_lt);
+    this.hooks = [ ];
+    for (var i = 1; i < arguments.length; ++i) {
+	this.hooks.push(arguments[i]);
+    }
     this.root = null;
 }
 
@@ -1031,9 +1034,6 @@ AVLTree.prototype = {
 	return !!node.right;
     }, 
 
-    // TODO: Provide a set of "hook" methods to the user so that the user may
-    // add custom fields to the AVLTreeNode. Useful for doing stuff like:
-    // sum, min, max in O(1)
     _update_metadata: function(node) {
 	if (!node) {
 	    return;
@@ -1050,6 +1050,14 @@ AVLTree.prototype = {
 	// console.log("\nvalue, height, weight:", node.value, height, weight);
 	node.height = height;
 	node.weight = weight;
+
+	// Provide a set of "hook" methods to the user so that the user may
+	// add custom fields to the AVLTreeNode. Useful for doing stuff like:
+	// sum, min, max in O(1)
+	this.hooks.forEach(function(hook) {
+	    hook(node);
+	});
+
     }, 
 
     _update_metadata_upto_root: function(node) {
