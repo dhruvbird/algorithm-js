@@ -813,6 +813,8 @@ function AVLTreeNode(value, parent, height, weight, left, right) {
 // max:    O(log g)
 // successor: O(log n)
 // predecessor: O(log n)
+// lower_bound: O(log n)
+// upper_bound: O(log n)
 // find_by_rank: O(log n)
 // clear:  O(1)
 // length: O(1)
@@ -877,6 +879,34 @@ AVLTree.prototype = {
 		var nodes = this._find_node(value);
 		return nodes.node;
     }, 
+
+	lower_bound: function(value) {
+		var nodes = this._find_node(value);
+		if (nodes.node) {
+			return nodes.node;
+		}
+		if (!nodes.prev) {
+			return null;
+		}
+		if (this.cmp_lt(nodes.prev.value, value)) {
+			return this.successor(nodes.prev);
+		}
+		return nodes.prev;
+	}, 
+
+	upper_bound: function(value) {
+		var nodes = this._find_node(value);
+		if (nodes.node) {
+			return nodes.node;
+		}
+		if (!nodes.prev) {
+			return null;
+		}
+		if (this.cmp_lt(nodes.prev.value, value)) {
+			return nodes.prev;
+		}
+		return this.predecessor(nodes.prev);
+	}, 
 
     find_by_rank: function(rank) {
 		return this._find_by_rank(this.root, rank);

@@ -259,14 +259,30 @@ function test_avl_tree() {
     assert(is_a_BST(t));
     var s = [ 1, 2, 3, 10, 20, 50, 100, 200 ];
 
+    // console.log("Graphviz:\n", t.toGraphviz());
+
     for (var i = 0; i < t.length; ++i) {
 	// console.log("rank:", i+1, t.find_by_rank(i+1));
 	assert(t.find_by_rank(i+1) == s[i]);
     }
 
+    assert(t.lower_bound(40).value == 50);
+    assert(t.upper_bound(40).value == 20);
+
+    assert(t.lower_bound(60).value == 100);
+    assert(t.upper_bound(60).value == 50);
+
+    assert(t.lower_bound(100).value == 100);
+    assert(t.upper_bound(100).value == 100);
+
+    assert(t.lower_bound(0).value == 1);
+    assert(!t.upper_bound(0));
+
+    assert(!t.lower_bound(1000));
+    assert(t.upper_bound(1000).value == 200);
+
     t.remove(20);
 
-    // console.log(t.toGraphviz());
     // console.log("\nTree after removal:", util.inspect(t.root, false, 10));
 
     assert(is_a_BST(t));

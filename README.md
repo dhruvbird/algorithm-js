@@ -88,6 +88,8 @@ a comparator and an existing array:
       node in the Tree that is greater than the current node. O(log n)
     * predecessor(node): Locate the predecessor of 'node'. The predecessor of a node is the greatest 
       node in the Tree that is smallest than the current node. O(log n)
+    * lower_bound(value): Locate the node *before* which 'value' can safely be inserted. O(log n)
+    * upper_bound(value): Locate the node *after* which 'value' can safely be inserted. O(log n)
     * find_by_rank(k): Locate the k'th smallest element in the Tree. 1 <= k <= Tree.length. 
       O(log n)
     * forEach(proc): Iterate over every element in the tree in sorted order 
