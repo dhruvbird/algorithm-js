@@ -1021,13 +1021,8 @@ AVLTree.prototype = {
 			while (node.parent && this._is_right_child(node)) {
 				node = node.parent;
 			}
-			if (node.parent) {
-				// node is node.parent's left child
-				node = node.parent;
-			}
-			else {
-				node = null;
-			}
+			// node is node.parent's left child or null (if node is the root)
+			node = node.parent;
 			return node;
 		}
 	}, 
@@ -1044,13 +1039,8 @@ AVLTree.prototype = {
 			while (node.parent && this._is_left_child(node)) {
 				node = node.parent;
 			}
-			if (node.parent) {
-				// node is node.parent's right child
-				node = node.parent;
-			}
-			else {
-				node = null;
-			}
+			// node is node.parent's right child or null (if node is the root)
+			node = node.parent;
 			return node;
 		}
 	}, 
