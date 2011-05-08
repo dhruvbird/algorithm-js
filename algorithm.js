@@ -794,8 +794,7 @@ exports.DisjointSet = DisjointSet;
 
 
 // An AVL Tree Node
-function AVLTreeNode(id, value, parent, height, weight, left, right) {
-	this.id     = id;
+function AVLTreeNode(value, parent, height, weight, left, right) {
     this.value  = value;
     this.parent = parent;
     this.height = height;
@@ -834,7 +833,7 @@ function AVLTree(_cmp_lt) {
     this.cmp_lt = _cmp_lt || cmp_lt;
     this.cmp_eq = cmp_eq_gen(this.cmp_lt);
     this.hooks = [ ];
-	this.next_id = 1;
+	this._gw_ctr = 1;
 
     for (var i = 1; i < arguments.length; ++i) {
 		this.hooks.push(arguments[i]);
@@ -845,7 +844,7 @@ function AVLTree(_cmp_lt) {
 AVLTree.prototype = {
     insert: function(value) {
 		if (!this.root) {
-			this.root = new AVLTreeNode(this.next_id++, value, null, 0, 1, null, null);
+			this.root = new AVLTreeNode(value, null, 0, 1, null, null);
 		}
 		else {
 			var node = this.root;
@@ -864,7 +863,7 @@ AVLTree.prototype = {
 			// console.log("Actually inserting:", value);
 			// console.log("\ninsert::nodes:", nodes);
 
-			var nn = new AVLTreeNode(this.next_id++, value, prev, 0, 1, null, null);
+			var nn = new AVLTreeNode(value, prev, 0, 1, null, null);
 			if (this.cmp_lt(value, prev.value)) {
 				// value < nodes.prev.value
 				prev.left = nn;
@@ -948,12 +947,18 @@ AVLTree.prototype = {
 		var nodes = [ ];
 		var edges = [ ];
 
-		this.forEach(function(value, node) {
+		this.forEach((function(value, node) {
+			if (node.parent && !node.parent.id) {
+				node.parent.id = this._gw_ctr++;
+			}
+			if (!node.id) {
+				node.id = this._gw_ctr++;
+			}
 			if (node.parent) {
 				edges.push('"' + node.parent.value + '-' + node.parent.id + '"->"' + node.value + '-' + node.id + '"');
 			}
 			nodes.push('"' + node.value + '-' + node.id + '"');
-		});
+		}).bind(this));
 
 		if (edges.length > 0) {
 			edges.push('');
