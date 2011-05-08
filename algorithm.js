@@ -794,7 +794,8 @@ exports.DisjointSet = DisjointSet;
 
 
 // An AVL Tree Node
-function AVLTreeNode(value, parent, height, weight, left, right) {
+function AVLTreeNode(id, value, parent, height, weight, left, right) {
+	this.id     = id;
     this.value  = value;
     this.parent = parent;
     this.height = height;
@@ -827,13 +828,16 @@ function AVLTreeNode(value, parent, height, weight, left, right) {
 // http://en.wikipedia.org/wiki/AVL_tree
 // http://en.wikipedia.org/wiki/Tree_rotation
 // http://closure-library.googlecode.com/svn/docs/closure_goog_structs_avltree.js.source.html
+// http://gcc.gnu.org/viewcvs/trunk/libstdc%2B%2B-v3/include/bits/stl_tree.h?revision=169899&view=markup
 //
 function AVLTree(_cmp_lt) {
     this.cmp_lt = _cmp_lt || cmp_lt;
     this.cmp_eq = cmp_eq_gen(this.cmp_lt);
     this.hooks = [ ];
+	this.next_id = 1;
+
     for (var i = 1; i < arguments.length; ++i) {
-	this.hooks.push(arguments[i]);
+		this.hooks.push(arguments[i]);
     }
     this.root = null;
 }
@@ -841,25 +845,33 @@ function AVLTree(_cmp_lt) {
 AVLTree.prototype = {
     insert: function(value) {
 		if (!this.root) {
-			this.root = new AVLTreeNode(value, null, 0, 1, null, null);
+			this.root = new AVLTreeNode(this.next_id++, value, null, 0, 1, null, null);
 		}
 		else {
-			var nodes = this._find_node(value);
-			if (nodes.node) {
-				// We found a node with the same key
-				return;
+			var node = this.root;
+			var prev = null;
+
+			while (node) {
+				prev = node;
+				if (this.cmp_lt(value, node.value)) {
+					node = node.left;
+				}
+				else {
+					node = node.right;
+				}
 			}
 
+			// console.log("Actually inserting:", value);
 			// console.log("\ninsert::nodes:", nodes);
 
-			var nn = new AVLTreeNode(value, nodes.prev, 0, 1, null, null);
-			if (this.cmp_lt(value, nodes.prev.value)) {
+			var nn = new AVLTreeNode(this.next_id++, value, prev, 0, 1, null, null);
+			if (this.cmp_lt(value, prev.value)) {
 				// value < nodes.prev.value
-				nodes.prev.left = nn;
+				prev.left = nn;
 			}
 			else {
 				// value > nodes.prev.value
-				nodes.prev.right = nn;
+				prev.right = nn;
 			}
 
 			this._rebalance_to_root(nn);
@@ -867,45 +879,51 @@ AVLTree.prototype = {
     }, 
 
     remove: function(value) {
-		var nodes = this._find_node(value);
-		if (!nodes.node) {
+		var node = this._find_node(value);
+		if (!node) {
 			return;
 		}
 
-		this._remove(nodes.node);
+		this._remove(node);
     }, 
     
     find: function(value) {
-		var nodes = this._find_node(value);
-		return nodes.node;
+		var node = this._find_node(value);
+		return node;
     }, 
 
 	lower_bound: function(value) {
-		var nodes = this._find_node(value);
-		if (nodes.node) {
-			return nodes.node;
+		var node = this.root;
+		var ret  = null;
+
+		while (node) {
+			if (!this.cmp_lt(node.value, value)) {
+				// this.root.value >= value
+				ret  = node;
+				node = node.left;
+			}
+			else {
+				node = node.right;
+			}
 		}
-		if (!nodes.prev) {
-			return null;
-		}
-		if (this.cmp_lt(nodes.prev.value, value)) {
-			return this.successor(nodes.prev);
-		}
-		return nodes.prev;
+		return ret;
 	}, 
 
 	upper_bound: function(value) {
-		var nodes = this._find_node(value);
-		if (nodes.node) {
-			return nodes.node;
+		var node = this.root;
+		var ret  = null;
+
+		while (node) {
+			if (this.cmp_lt(value, node.value)) {
+				// value < this.root.value
+				ret  = node;
+				node = node.left;
+			}
+			else {
+				node = node.right;
+			}
 		}
-		if (!nodes.prev) {
-			return null;
-		}
-		if (this.cmp_lt(nodes.prev.value, value)) {
-			return nodes.prev;
-		}
-		return this.predecessor(nodes.prev);
+		return ret;
 	}, 
 
     find_by_rank: function(rank) {
@@ -916,6 +934,14 @@ AVLTree.prototype = {
 		this.root = null;
     },
 
+	items: function() {
+		var _i = [ ];
+		this.forEach(function(value) {
+			_i.push(value);
+		});
+		return _i;
+	}, 
+
     toGraphviz: function() {
 		// Returns a grpahviz consumable tree for plotting
 		var graph = [ 'fontname=arial', 'node [fontname=arial,fontsize=10]', 'digraph {' ];
@@ -924,9 +950,9 @@ AVLTree.prototype = {
 
 		this.forEach(function(value, node) {
 			if (node.parent) {
-				edges.push('"' + node.parent.value + '"->"' + node.value + '"');
+				edges.push('"' + node.parent.value + '-' + node.parent.id + '"->"' + node.value + '-' + node.id + '"');
 			}
-			nodes.push('"' + node.value + '"');
+			nodes.push('"' + node.value + '-' + node.id + '"');
 		});
 
 		if (edges.length > 0) {
@@ -941,10 +967,6 @@ AVLTree.prototype = {
     forEach: function(proc) {
 		this._forEach(this.root, proc);
     }, 
-
-    // TODO: Add functions:
-    // lower_bound
-    // upper_bound
 
     _forEach: function(node, proc) {
 		if (node) {
@@ -1143,21 +1165,14 @@ AVLTree.prototype = {
     }, 
 
     _find_node: function(value) {
-		var node = this.root;
-		var prev = null;
-
-		while (node && !this.cmp_eq(node.value, value) /* node.value != value */) {
-			prev = node;
-			if (this.cmp_lt(value, node.value)) {
-				node = node.left;
-			}
-			else {
-				node = node.right;
-			}
+		var node = this.lower_bound(value);
+		if (node && this.cmp_eq(node.value, value)) {
+			return node;
 		}
-
-		return { prev: prev, node: node };
-    }, 
+		else {
+			return null;
+		}
+	}, 
 
     _rotate_left: function(node) {
 		if (!node) {

@@ -88,8 +88,8 @@ a comparator and an existing array:
       node in the Tree that is greater than the current node. O(log n)
     * predecessor(node): Locate the predecessor of 'node'. The predecessor of a node is the greatest 
       node in the Tree that is smallest than the current node. O(log n)
-    * lower_bound(value): Locate the node *before* which 'value' can safely be inserted. O(log n)
-    * upper_bound(value): Locate the node *after* which 'value' can safely be inserted. O(log n)
+    * lower_bound(value): Locate the *first* node before which 'value' can safely be inserted. O(log n)
+    * upper_bound(value): Locate the *last* node before which 'value' can safely be inserted. O(log n)
     * find_by_rank(k): Locate the k'th smallest element in the Tree. 1 <= k <= Tree.length. 
       O(log n)
     * forEach(proc): Iterate over every element in the tree in sorted order 
@@ -101,6 +101,7 @@ a comparator and an existing array:
     * length:        The total number of elements in the Tree. O(1)
     * height:        The length of the longest path from root to leaf. O(1)
     * clear:         Empty the Tree. O(1)
+    * This AVL Tree can store multiple elements with the *same key*
     * You can find more information about the AVL Tree Data Structure on these pages:
         * http://en.wikipedia.org/wiki/AVL_tree
         * http://en.wikipedia.org/wiki/Tree_rotation

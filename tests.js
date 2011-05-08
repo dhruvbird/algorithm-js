@@ -267,19 +267,21 @@ function test_avl_tree() {
     }
 
     assert(t.lower_bound(40).value == 50);
-    assert(t.upper_bound(40).value == 20);
+    assert(t.upper_bound(40).value == 50);
 
     assert(t.lower_bound(60).value == 100);
-    assert(t.upper_bound(60).value == 50);
+    assert(t.upper_bound(60).value == 100);
 
+    // console.log("GW:", t.toGraphviz());
+    // console.log(t.lower_bound(100).value);
     assert(t.lower_bound(100).value == 100);
-    assert(t.upper_bound(100).value == 100);
+    assert(t.upper_bound(100).value == 200);
 
     assert(t.lower_bound(0).value == 1);
-    assert(!t.upper_bound(0));
+    assert(t.upper_bound(0).value == 1);
 
     assert(!t.lower_bound(1000));
-    assert(t.upper_bound(1000).value == 200);
+    assert(!t.upper_bound(1000));
 
     t.remove(20);
 
@@ -399,9 +401,52 @@ function test_avl_tree_hooks() {
     // Sum of all numbers <= 5
     var tmp = query_sum(t.root, 5);
     assert(tmp == 0);
-
 }
+
+function test_avl_tree_multimap() {
+    var items = [ 4, 9, 2, 5, 4, 2, 1, 2, 3, 2, 1, 7, 3, 2 ];
+
+    var tree = new algo.AVLTree();
+    for (var i = 0; i < items.length; ++i) {
+	tree.insert(items[i]);
+	// console.log("Items:", tree.items());
+	// console.log("Graphviz:", tree.toGraphviz());
+    }
+
+    var lb = tree.lower_bound(1);
+    // console.log("lb(1+0):", lb.value);
+    assert(lb.value == 1);
+
+    lb = tree.successor(lb);
+    assert(lb.value == 1);
+    // console.log("lb(1+1):", lb.value);
+
+    lb = tree.successor(lb);
+    assert(lb.value == 2);
+    // console.log("lb(1+2):", lb.value);
+
+    var ub = tree.upper_bound(1);
+    assert(ub.value == 2);
+    // console.log("ub(1+0):", ub.value);
+
+    ub = tree.successor(ub);
+    assert(ub.value == 2);
+    // console.log("ub(1+1):", ub.value);
+
+    ub = tree.upper_bound(2);
+    assert(ub.value == 3);
+    // console.log("ub(2+0):", ub.value);
+
+    var tmp = tree.predecessor(ub);
+    assert(tmp.value == 2);
+    // console.log("ub(2-1):", tmp.value);
+
+    ub = tree.successor(ub);
+    assert(ub.value == 3);
+    // console.log("ub(2+1):", ub.value);
+}
+
 
 test_avl_tree();
 test_avl_tree_hooks();
-
+test_avl_tree_multimap();
