@@ -62,17 +62,6 @@ Queue.prototype = {
 		this._pop_stack.pop();
 		return _top;
 	}, 
-	get top() {
-		if (this.length === 0) {
-			return;
-		}
-
-		if (this._pop_stack.length == 0) {
-			this._copy_push_to_pop();
-		}
-
-		return this._pop_stack.slice(-1)[0];
-	}, 
 	remove: function(elem) {
 		var _tgt_stack = this._pop_stack;
 		var _tgt_index = -1;
@@ -87,15 +76,29 @@ Queue.prototype = {
 			_tgt_stack.splice(_tgt_index, 1);
 		}
 	}, 
-	get length() {
-		return this._push_stack.length + this._pop_stack.length;
-	}, 
 	_copy_push_to_pop: function() {
 		this._push_stack.reverse();
 		this._pop_stack = this._push_stack;
 		this._push_stack = [ ];
 	}
 };
+
+Queue.prototype.__defineGetter__('top', function() {
+	if (this.length === 0) {
+		return;
+	}
+
+	if (this._pop_stack.length === 0) {
+		this._copy_push_to_pop();
+	}
+
+	return this._pop_stack.slice(-1)[0];
+});
+
+Queue.prototype.__defineGetter__('length', function() {
+	return this._push_stack.length + this._pop_stack.length;
+});
+
 
 exports.Queue = Queue;
 exports.FIFO  = Queue;
@@ -110,7 +113,7 @@ exports.FIFO  = Queue;
 function Stack() {
 }
 
-Stack.prototype = new Array();
+Stack.prototype = Array;
 Stack.prototype.__defineGetter__('top', function () {
 	return this.slice(this.length - 1)[0];
 });
@@ -131,7 +134,7 @@ function cmp_lt(lhs, rhs) {
 function cmp_gt_gen(cmp_lt) {
 	return function(lhs, rhs) {
 		return cmp_lt(rhs, lhs);
-	}
+	};
 }
 
 function cmp_eq_gen(cmp_lt) {
@@ -213,17 +216,11 @@ Heap.prototype = {
 		}
 		return _top;
 	}, 
-	get top() {
-		return this._repr[0];
-	}, 
 	push: function(elem) {
 		for (var i = 0; i < arguments.length; ++i) {
 			this._repr.push(arguments[i]);
 			this._bubble_up(this.length - 1);
 		}
-	}, 
-	get length() {
-		return this._repr.length;
 	}, 
 	_make_heap: function() {
 		// Could be made O(n) later. Currently is O(n log n)
@@ -237,7 +234,7 @@ Heap.prototype = {
 	_bubble_up: function(i) {
 		// var don = this._repr[i] == 21;
 		while (i > 0) {
-			var pi = ((i % 2) == 0 ? i - 2 : i - 1) / 2;
+			var pi = ((i % 2) === 0 ? i - 2 : i - 1) / 2;
 
 			// If Value at Child is (lt) cmp value at Parent, we swap the 2.
 			// if (don) { console.log("bubble up: parent", this._repr[pi], "child", this._repr[i]); }
@@ -292,6 +289,14 @@ Heap.prototype = {
 	} // _bubble_down()
 
 };
+
+Heap.prototype.__defineGetter__('top', function() {
+	return this._repr[0];
+});
+
+Heap.prototype.__defineGetter__('length', function() {
+	return this._repr.length;
+});
 
 Heap.prototype.insert = Heap.prototype.push;
 
@@ -351,15 +356,15 @@ MinMaxHeap.prototype = {
 	}, 
 
 	_is_level_min_level: function(level) {
-		return (level % 2) == 0;
+		return (level % 2) === 0;
 	}, 
 
 	_is_index_min_level: function(i) {
-		return this._is_level_min_level(parseInt(Math.log(i+1) / Math.log(2.0)));
+		return this._is_level_min_level(Math.floor(Math.log(i+1) / Math.log(2.0)));
 	}, 
 
 	_parent_index: function(i) {
-		return ((i % 2) == 0 ? i - 2 : i - 1) / 2;
+		return ((i % 2) === 0 ? i - 2 : i - 1) / 2;
 	}, 
 	
 	_grand_parent_index: function(i) {
@@ -367,7 +372,7 @@ MinMaxHeap.prototype = {
 	},
 
 	_bubble_up: function(i) {
-		if (i == 0) {
+		if (i === 0) {
 			return;
 		}
 
@@ -528,10 +533,6 @@ MinMaxHeap.prototype = {
 		}
 	},
 
-	get length() {
-		return this._repr.length;
-	}, 
-
 	_min: function() {
 		return { index: 0, value: this._repr[0] };
 	}, 
@@ -564,14 +565,6 @@ MinMaxHeap.prototype = {
 		return opt;
 	},
 
-	get min() {
-		return this._min().value;
-	}, 
-
-	get max() {
-		return this._max().value;
-	}, 
-
 	push: function(elem) {
 		for (var i = 0; i < arguments.length; ++i) {
 			this._repr.push(arguments[i]);
@@ -594,6 +587,19 @@ MinMaxHeap.prototype = {
 };
 
 MinMaxHeap.prototype.insert = MinMaxHeap.prototype.push;
+
+MinMaxHeap.prototype.__defineGetter__('length', function() {
+	return this._repr.length;
+});
+
+MinMaxHeap.prototype.__defineGetter__('min', function() {
+	return this._min().value;
+});
+
+MinMaxHeap.prototype.__defineGetter__('max', function() {
+	return this._max().value;
+});
+
 
 exports.MinMaxHeap      = MinMaxHeap;
 exports.PriorityDequeue = MinMaxHeap;
@@ -695,10 +701,6 @@ Trie.prototype = {
 		return this._exists(s.substring(1), _r);
 	}, 
 	
-	get length() {
-		return this._length;
-	}, 
-
 	_forEach: function(r, proc, accum, i) {
 		if (!r) {
 			return 0;
@@ -730,6 +732,9 @@ Trie.prototype = {
 
 };
 
+Trie.prototype.__defineGetter__('length', function() {
+	return this._length;
+});
 
 exports.Trie = Trie;
 
@@ -780,15 +785,15 @@ DisjointSet.prototype = {
 
 	// console.log("union::returning:", this_rep);
 	return this_rep;
-    }, 
+    }
 
-    get length() {
+};
+
+DisjointSet.prototype.__defineGetter__('length', function() {
 	var len = this.representative()._length;
 	// console.log("length:", len);
 	return len;
-    }
-};
-
+});
 
 exports.DisjointSet = DisjointSet;
 
@@ -1346,7 +1351,7 @@ function lower_bound(range, value, cmp_lt) {
 	var e = range.length;
 
 	while (e - b > 1) {
-		var m = parseInt(b + (e-b) / 2);
+		var m = Math.floor(b + (e-b) / 2);
 		// console.log("b, m, e:", b, m, e);
 
 		if (cmp_lt_eq(value, range[m])) {
@@ -1389,7 +1394,7 @@ function upper_bound(range, value, cmp_lt) {
 	var e = range.length;
 
 	while (e - b > 1) {
-		var m = parseInt(b + (e-b) / 2);
+		var m = Math.floor(b + (e-b) / 2);
 		// console.log("b, m, e:", b, m, e);
 
 		if (cmp_lt(value, range[m])) {
