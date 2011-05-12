@@ -113,13 +113,13 @@ a comparator and an existing array:
 values from the passed array. The returned range is also an array. O(n)
 
 2. lower_bound(range, value, cmp_lt): (range MUST be sorted) Returns the first 
-location before which value can safely be inserted so that the resulting range is also
+location before which 'value' can safely be inserted so that the resulting range is also
 sorted. Will return one past the last valid index if value is greater than any 
 element in the list. O(log n)
 
 3. upper_bound(range, value, cmp_lt): (range MUST be sorted) Returns the last 
-location after which value can safely be inserted so that the resulting range is also
-sorted. Will return one the last valid index if value is greater than any 
+location before which 'value' can safely be inserted so that the resulting range is also
+sorted. Will return one past the last valid index if value is greater than any 
 element in the list. O(log n)
 
 4. equal_range(range, value, cmp_lt): (range MUST be sorted) Returns the first and

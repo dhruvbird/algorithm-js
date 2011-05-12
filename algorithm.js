@@ -1337,7 +1337,7 @@ function range(range, begin, end) {
 
 
 function lower_bound(range, value, cmp_lt) {
-	/* Returns an index before which it is safe to insert 'value'
+	/* Returns the first index before which it is safe to insert 'value'
 	 * such that the 'range' remains sorted
 	 */
 	if (range.length === 0) {
@@ -1349,35 +1349,20 @@ function lower_bound(range, value, cmp_lt) {
 
 	var b = 0;
 	var e = range.length;
+	var m = Math.floor(b + (e-b) / 2);
+	var lb = e;
 
-	while (e - b > 1) {
-		var m = Math.floor(b + (e-b) / 2);
-		// console.log("b, m, e:", b, m, e);
-
-		if (cmp_lt_eq(value, range[m])) {
-			// Value is <= value in the middle. Search in the left half before m.
+	while (b < e) {
+		if (cmp_gt_eq(range[m], value)) {
+			lb = m;
 			e = m;
 		}
 		else {
-			// Value is > value in the middle. Search in the right half including m.
-			b = m;
+			b = m + 1;
 		}
+		m = Math.floor(b + (e-b) / 2);
 	}
-
-	var cmp_eq = cmp_eq_gen(cmp_lt);
-
-	if (b == range.length) {
-		return b;
-	}
-	else {
-		// The value is either the valiue at 'b' or at 'b+1' (if it is a valid index).
-		if (cmp_gt_eq(range[b], value)) {
-			return b;
-		}
-		else {
-			return b+1;
-		}
-	}
+	return lb;
 }
 
 function upper_bound(range, value, cmp_lt) {
@@ -1392,27 +1377,23 @@ function upper_bound(range, value, cmp_lt) {
 
 	var b = 0;
 	var e = range.length;
+	var m = Math.floor(b + (e-b) / 2);
+	var ub = e;
 
-	while (e - b > 1) {
-		var m = Math.floor(b + (e-b) / 2);
-		// console.log("b, m, e:", b, m, e);
-
+	while (b < e) {
+		// if (value < range[m]), go left
 		if (cmp_lt(value, range[m])) {
-			// Value is < value in the middle. Search in the left half before m.
+			ub = m;
+			// console.log("Setting ub to:", ub);
 			e = m;
 		}
 		else {
-			// Value is >= value in the middle. Search in the right half including m.
-			b = m;
+			b = m + 1;
 		}
+		m = Math.floor(b + (e-b) / 2);
 	}
-
-	if (b == range.length) {
-		return b - 1;
-	}
-	else {
-		return b;
-	}
+	// console.log("ub:", ub);
+	return ub;
 }
 
 function equal_range(range, value, cmp_lt) {

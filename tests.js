@@ -70,6 +70,32 @@ assert(lb == 7);
 lb = algo.lower_bound(r, 100);
 assert(lb == 9);
 
+
+ub = algo.upper_bound(r, 0);
+assert(ub == 0);
+
+ub = algo.upper_bound(r, 10);
+assert(ub == 2);
+
+ub = algo.upper_bound(r, 20);
+assert(ub == 4);
+
+ub = algo.upper_bound(r, 50);
+assert(ub == 7);
+
+ub = algo.upper_bound(r, 70);
+assert(ub == 7);
+
+ub = algo.upper_bound(r, 100);
+assert(ub == 11);
+
+ub = algo.upper_bound(r, 101);
+assert(ub == 12);
+
+ub = algo.upper_bound(r, 102);
+assert(ub == 12);
+
+
 var r1 = [ 1, 2, 3, 3, 3, 3, 3, 4, 5, 10, 10, 1011, 1011, 1011, 1011, 2002 ];
 
 lb = algo.lower_bound(r1, 0);
@@ -86,30 +112,6 @@ assert(lb == 15);
 
 lb = algo.lower_bound(r1, 2003);
 assert(lb == 16);
-
-ub = algo.upper_bound(r, 0);
-assert(ub == 0);
-
-ub = algo.upper_bound(r, 10);
-assert(ub == 1);
-
-ub = algo.upper_bound(r, 20);
-assert(ub == 3);
-
-ub = algo.upper_bound(r, 50);
-assert(ub == 6);
-
-ub = algo.upper_bound(r, 70);
-assert(ub == 6);
-
-ub = algo.upper_bound(r, 100);
-assert(ub == 10);
-
-ub = algo.upper_bound(r, 101);
-assert(ub == 11);
-
-ub = algo.upper_bound(r, 102);
-assert(ub == 11);
 
 
 algo.heap_sort(r, algo.cmp_gt);
@@ -339,14 +341,14 @@ function test_avl_tree_hooks() {
 	return v1 < v2;
     }
 
-    function summer(node) {
+    function binary_tree_summer(node) {
 	var _s = (node.left ? node.left.sum : 0) + 
 	    (node.right ? node.right.sum : 0) + node.value.key;
 	node.sum = _s;
 	// console.log("key, sum:", node.value.key, _s);
     }
 
-    var t = new algo.AVLTree(obj_lt, summer);
+    var t = new algo.AVLTree(obj_lt, binary_tree_summer);
     t.insert({ key: 45, value: "frodo" });
     t.insert({ key: 40, value: "harry" });
     t.insert({ key: 55, value: "patricia" });
@@ -406,7 +408,14 @@ function test_avl_tree_hooks() {
 function test_avl_tree_multimap() {
     var items = [ 4, 9, 2, 5, 4, 2, 1, 2, 3, 2, 1, 7, 3, 2 ];
 
-    var tree = new algo.AVLTree();
+    function binary_tree_summer(node) {
+	var _s = (node.left ? node.left.sum : 0) + 
+	    (node.right ? node.right.sum : 0) + node.value;
+	node.sum = _s;
+    }
+
+
+    var tree = new algo.AVLTree(algo.cmp_lt, binary_tree_summer);
     for (var i = 0; i < items.length; ++i) {
 	tree.insert(items[i]);
 	// console.log("Items:", tree.items());
@@ -444,6 +453,45 @@ function test_avl_tree_multimap() {
     ub = tree.successor(ub);
     assert(ub.value == 3);
     // console.log("ub(2+1):", ub.value);
+
+
+    function query_sum(node, value) {
+	// We do the query like we do for a Segment Tree
+	if (!node) {
+	    return 0;
+	}
+
+	// console.log("query_sum:", node.value.key);
+
+	if (node.value <= value) {
+	    var sub = node.right ? node.right.sum : 0;
+	    // console.log("sub:", sub);
+	    // console.log("_qs:", query_sum(node.right, value));
+	    return node.sum - sub + query_sum(node.right, value);
+	}
+	else {
+	    // node.value > value
+	    return query_sum(node.left, value);
+	}
+    }
+
+    // console.log("<= 0:", query_sum(tree.root, 0));
+    // console.log("<= 1:", query_sum(tree.root, 1));
+    // console.log("<= 2:", query_sum(tree.root, 2));
+    // console.log("<= 3:", query_sum(tree.root, 3));
+    // console.log("<= 4:", query_sum(tree.root, 4));
+    // console.log("<= 7:", query_sum(tree.root, 7));
+    // console.log("<= 9:", query_sum(tree.root, 9));
+    // console.log("<= 20:", query_sum(tree.root, 20));
+
+    assert(query_sum(tree.root, 0) === 0);
+    assert(query_sum(tree.root, 1) === 2);
+    assert(query_sum(tree.root, 2) === 12);
+    assert(query_sum(tree.root, 3) === 18);
+    assert(query_sum(tree.root, 4) === 26);
+    assert(query_sum(tree.root, 7) === 38);
+    assert(query_sum(tree.root, 9) === 47);
+    assert(query_sum(tree.root, 20) === 47);
 }
 
 
