@@ -761,30 +761,30 @@ function DisjointSet(value) {
 
 DisjointSet.prototype = {
     representative: function() {
-	if (this.parent === this) {
-	    return this;
-	}
+		if (this.parent === this) {
+			return this;
+		}
 
-	var p = this.parent.representative();
-	this.parent = p;
-	return p;
+		var p = this.parent.representative();
+		this.parent = p;
+		return p;
     }, 
 
     union: function(other_set) {
-	var this_rep  = this.representative();
-	var other_rep = other_set.representative();
-	// console.log("this_rep, other_rep:", this_rep, other_rep);
+		var this_rep  = this.representative();
+		var other_rep = other_set.representative();
+		// console.log("this_rep, other_rep:", this_rep, other_rep);
+		
+		if (this_rep === other_rep) {
+			return this_rep;
+		}
 
-	if (this_rep === other_rep) {
-	    return this_rep;
-	}
-
-	// console.log("other_rep.length:", other_rep.length);
-	this_rep._length += other_rep.length;
-	other_rep.parent = this_rep;
-
-	// console.log("union::returning:", this_rep);
-	return this_rep;
+		// console.log("other_rep.length:", other_rep.length);
+		this_rep._length += other_rep.length;
+		other_rep.parent = this_rep;
+		
+		// console.log("union::returning:", this_rep);
+		return this_rep;
     }
 
 };
