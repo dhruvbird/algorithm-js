@@ -1336,9 +1336,11 @@ function range(range, begin, end) {
 }
 
 
+// Time Complexity:  O(log n)
+// Space Complexity: O(1)
 function lower_bound(range, value, cmp_lt) {
 	/* Returns the first index before which it is safe to insert 'value'
-	 * such that the 'range' remains sorted
+	 * such that 'range' remains sorted
 	 */
 	if (range.length === 0) {
 		return 0;
@@ -1365,9 +1367,11 @@ function lower_bound(range, value, cmp_lt) {
 	return lb;
 }
 
+// Time Complexity:  O(log n)
+// Space Complexity: O(1)
 function upper_bound(range, value, cmp_lt) {
-	/* Returns an index after which it is safe to insert 'value'
-	 * such that the 'range' remains sorted
+	/* Returns the last index before which it is safe to insert 'value'
+	 * such that 'range' remains sorted
 	 */
 	if (range.length === 0) {
 		return 0;
@@ -1396,6 +1400,9 @@ function upper_bound(range, value, cmp_lt) {
 	return ub;
 }
 
+
+// Time Complexity:  O(log n)
+// Space Complexity: O(1)
 function equal_range(range, value, cmp_lt) {
 	var lb = lower_bound(range, value, cmp_lt);
 	var ub = upper_bound(range, value, cmp_lt);
