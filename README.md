@@ -136,7 +136,8 @@ can be inserted so that the partition remains.
 Time Complexity: O(n)
 Space Complexity: O(1)
 
-7. stable_partition: Same as above, but retains the original order of elements.
+7. stable_partition: Same as above, but retains the original order of elements for
+elements that compare equal.
 Time Complexity: O(n)
 Space Complexity: O(n)
 
