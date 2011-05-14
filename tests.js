@@ -117,25 +117,31 @@ assert(lb == 16);
 algo.heap_sort(r, algo.cmp_gt);
 assert(algo.is_sorted(r, algo.cmp_gt), "Not sorted");
 
-var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 100);
-assert(pidx == 15);
+var r2 = [ 782, 1, 21, 3, 11, 29, 23, 22, 829, 91, 90, 89, 45, 46, 47, 19, 201, 191 ];
+var pidx = algo.partition(r2, 12);
+assert(pidx == 8);
 
 var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 50);
-assert(pidx == 12);
+var pidx = algo.partition(r2, 3);
+assert(pidx == 16);
+
+var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+var pidx = algo.partition(r2, 5);
+assert(pidx == 14);
+
+var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+var pidx = algo.partition(r2, 20);
+assert(pidx == 5);
 
 var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
 var pidx = algo.partition(r2, 0);
-assert(pidx == 4);
+assert(pidx == 9);
 
 var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, -10);
-assert(pidx == 0);
+var pidx = algo.partition(r2, 9);
+assert(pidx == 20);
 
-var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 3003);
-assert(pidx == 21);
+
 
 var mmh = new algo.MinMaxHeap(algo.cmp_lt, r2);
 
@@ -498,3 +504,16 @@ function test_avl_tree_multimap() {
 test_avl_tree();
 test_avl_tree_hooks();
 test_avl_tree_multimap();
+
+
+function test_randomized_select() {
+    for (var i = 0; i < 500; ++i) {
+	var r = [ 782, 1, 21, 3, 11, 29, 23, 22, 829, 91, 90, 89, 45, 46, 47, 19, 201, 191 ];
+	var v = algo.randomized_select(r, Math.floor(r.length/2));
+	// console.log("randomized_select::median:", v);
+	// console.log("sorted:", r.sort(algo.js_cmp_gen(algo.cmp_lt)));
+	assert(v == 45);
+    }
+}
+
+test_randomized_select();

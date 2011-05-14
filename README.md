@@ -130,9 +130,10 @@ resulting range is also sorted. O(log n)
 index where value is equal to the value at index. Returns -1 if the value is not to
 be found in the range. O(log n)
 
-6. partition(range, pivot, cmp_lt): Partitions a range around 'pivot' and returns
-the index in the modified range that corresponds to the location before which pivot
-can be inserted so that the partition remains.
+6. partition(range, pivot_index, cmp_lt): Partitions a range around the element at 
+range[pivot_index] and returns the index in the modified range that corresponds 
+to the location before which pivot can be inserted so that the partition remains 
+valid.
 Time Complexity: O(n)
 Space Complexity: O(1)
 
@@ -157,6 +158,10 @@ range to be in Min-Heap order.
 11. heap_sort(input, cmp): Sorts 'input' using comparator 'cmp'. Sorts the
 array 'input' in-place. Returns the sorted array. The array passed as 'input' 
 WILL be modified. This is an unstable sort - O(n log n)
+
+12. randomized_select(range, k, cmp): Select the k'th smallest element from 
+'range' using 'cmp' as the less-than comparator. This function Expected runtime 
+complexity: O(n).
 
 
 ###Comparators:

@@ -183,6 +183,8 @@ exports.cmp_gt_eq = cmp_gt_eq;
 exports.cmp_eq = cmp_eq;
 
 
+exports.js_cmp_gen = js_cmp_gen;
+
 
 
 //
@@ -1423,53 +1425,77 @@ function binary_search(range, value, cmp_lt) {
 // Time Complexity:  O(n)
 // Space Complexity: O(1)
 // Note: This function is unstable
-function partition(range, pivot, cmp_lt) {
+function partition(range, pivot_index, cmp_lt) {
 	cmp_lt = cmp_lt || exports.cmp_lt;
 
-	if (range.length === 0) {
-		return range;
-	}
+	assert(pivot_index < range.length);
+	// Swap the pivot with the 1st element of the range
+	_swap(range, 0, pivot_index);
+	var pivot = range[0];
 
-	var l = 0;
+	var l = 1;
 	var u = range.length - 1;
 
 	while (true) {
-		while (l < u && cmp_lt(range[l], pivot)) {
+		// console.log("while(true), l, u:", l, u);
+
+		// range[l] <= pivot
+		while (l < u && !cmp_lt(pivot, range[l])) {
 			l += 1;
 		}
 
-		while (l < u && !cmp_lt(range[u], pivot)) {
+		// console.log("range[u], pivot:", range[u], pivot);
+		// range[u] > pivot
+		while (l < u && cmp_lt(pivot, range[u])) {
 			u -= 1;
 		}
 
-		if (l >= u) {
+		if (l === u) {
+			// console.log("partition::exiting:", l, "and", u);
+			// range[u] > pivot
+			if (cmp_lt(pivot, range[u])) {
+				--u;
+			}
 			break;
 		}
 
+		// console.log("partition::swapping indexes:", l, "and", u);
 		_swap(range, u, l);
-		l += 1;
+		// l += 1;
 		u -= 1;
 	}
 
-	if (l < range.length && cmp_lt_eq_gen(cmp_lt)(range[l], pivot)) {
-		return l + 1;
-	}
-	else {
-		return l;
-	}
+	// console.log("RET:", range.join(", "), "u:", u);
+	_swap(range, 0, u);
+	return u;
 }
 
 // Time Complexity:  O(n)
 // Space Complexity: O(n)
-function stable_partition(range, pivot, cmp_lt) {
+function stable_partition(range, pivot_index, cmp_lt) {
 	var p1 = [ ];
 	var p2 = [ ];
 
+	assert(pivot_index < range.length);
+
+	// Swap the pivot with the 1st element of the range
+	_swap(range, 0, pivot_index);
+	var pivot = range[0];
+
 	for (var i = 0; i < range.length; ++i) {
-		(cmp_lt(range[i], pivot) ? p1 : p2).push(range[i]);
+		// range[i] > pivot  -> p2
+		// range[i] <= pivot -> p1
+		(cmp_lt(pivot, range[i]) ? p2 : p1).push(range[i]);
 	}
-	range.splice(0, range.length, p1.concat(p2));
-	return range;
+
+	// Invariant: p1.length > 0
+	// console.log("p1.length:", p1.length);
+	assert(p1.length > 0);
+
+	_swap(p1, 0, p1.length - 1);
+	range.splice(0, range.length);
+	range.push.apply(range, p1.concat(p2));
+	return p1.length - 1;
 }
 
 // Time Complexity:  O(n)
@@ -1529,6 +1555,45 @@ function is_heap(range, cmp) {
 	return true;
 }
 
+function _randomized_select(range, k, cmp) {
+	// console.log("_randomized_select:", k);
+
+	assert(range.length != 0);
+	if (range.length == 1) {
+		return range[0];
+	}
+	var ri = Math.floor(Math.random()*range.length);
+	var pat = range[ri];
+	// console.log("range1: [", range.join(", "), "]");
+	var pi = partition(range, ri, cmp);
+	// console.log("range2: [", range.join(", "), "]");
+	// console.log("ri, pi, pat:", ri, pi, pat);
+	// console.log("range[pi]:", range[pi], "pat:", pat);
+
+	if (k == pi) {
+		return range[pi];
+	}
+	else if (k < pi) {
+		return _randomized_select(range.slice(0, pi+1), k, cmp);
+	}
+	else {
+		return _randomized_select(range.slice(pi+1), k-pi-1, cmp);
+	}
+}
+
+// Time Complexity:  O(n) [expected]
+// Space Complexity: O(n) [expected]
+function randomized_select(range, k, cmp) {
+	cmp = cmp || cmp_lt;
+	if (range.length === 0) {
+		return null;
+	}
+	assert(k > 0 && k <= range.length);
+	return _randomized_select(range, k-1, cmp);
+}
+
+
+
 
 exports.range            = range;
 exports.lower_bound      = lower_bound;
@@ -1540,5 +1605,6 @@ exports.stable_partition = stable_partition;
 exports.merge            = merge;
 exports.is_sorted        = is_sorted;
 exports.is_heap          = is_heap;
+exports.randomized_select = randomized_select;
 
 // TODO: String processing algorithms
