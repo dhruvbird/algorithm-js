@@ -160,8 +160,8 @@ array 'input' in-place. Returns the sorted array. The array passed as 'input'
 WILL be modified. This is an unstable sort - O(n log n)
 
 12. randomized_select(range, k, cmp): Select the k'th smallest element from 
-'range' using 'cmp' as the less-than comparator. This function Expected runtime 
-complexity: O(n).
+'range' using 'cmp' as the less-than comparator. The expected runtime 
+complexity of this function is O(n).
 
 
 ###Comparators:
