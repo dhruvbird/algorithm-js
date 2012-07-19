@@ -27,194 +27,219 @@ var assert = require('assert').ok;
 var util   = require('util');
 
 
-var q = new algo.Queue();
-q.push(1, 2, 3, 4, 5, 6);
-assert(q.pop() == 1, "pop failed");
+function test_queue() {
+    var q = new algo.Queue();
+    q.push(1, 2, 3, 4, 5, 6);
+    assert(q.pop() == 1, "pop failed");
 
-q.push(10, 20, 30, 40, 50, 60);
-assert(q.top == 2, "top failed");
+    q.push(10, 20, 30, 40, 50, 60);
+    assert(q.top == 2, "top failed");
+    
+    assert(q.length == 11, "length failed");
+}
 
-assert(q.length == 11, "length failed");
+function test_min_heap() {
+    var mh = new algo.MinHeap();
+    mh.push(10, 100, 20, 9, 86, 40, 33, 12, 21, 99, 101, 100);
+    // console.log(mh);
 
+    assert(algo.is_heap(mh._repr), "Not a heap");
+    
+    var r = mh._repr;
+    mh._repr = [ ];
+    
+    algo.heap_sort(r);
+    assert(algo.is_sorted(r), "Not sorted");
+}
 
-var mh = new algo.MinHeap();
-mh.push(10, 100, 20, 9, 86, 40, 33, 12, 21, 99, 101, 100);
-// console.log(mh);
+function test_max_heap() {
+    var r = [ 10, 100, 20, 9, 86, 40, 33, 12, 21, 99, 101, 100 ];
 
-assert(algo.is_heap(mh._repr), "Not a heap");
+    // Sort in non-increasing order
+    r.sort(function(x,y) { return y-x; });
 
-var r = mh._repr;
-mh._repr = [ ];
+    algo.heap_sort(r, algo.cmp_gt);
+    assert(algo.is_sorted(r, algo.cmp_gt), "Not sorted");
+}
 
-algo.heap_sort(r);
-assert(algo.is_sorted(r), "Not sorted");
+function test_functions() {
+    var r = [ 10, 100, 20, 9, 86, 40, 33, 12, 21, 99, 101, 100 ];
 
-// console.log(r);
-var lb, ub;
+    // Sort in non-decreasing order
+    r.sort(function(x,y) { return x-y; });
 
-lb = algo.lower_bound(r, 10);
-assert(lb == 1);
+    // console.log(r);
+    var lb, ub;
 
-lb = algo.lower_bound(r, 20);
-assert(lb == 3);
+    lb = algo.lower_bound(r, 10);
+    assert(lb == 1);
 
-lb = algo.lower_bound(r, 50);
-assert(lb == 7);
+    lb = algo.lower_bound(r, 20);
+    assert(lb == 3);
 
-lb = algo.lower_bound(r, 60);
-assert(lb == 7);
+    lb = algo.lower_bound(r, 50);
+    assert(lb == 7);
 
-lb = algo.lower_bound(r, 70);
-assert(lb == 7);
+    lb = algo.lower_bound(r, 60);
+    assert(lb == 7);
 
-lb = algo.lower_bound(r, 100);
-assert(lb == 9);
+    lb = algo.lower_bound(r, 70);
+    assert(lb == 7);
+    
+    lb = algo.lower_bound(r, 100);
+    assert(lb == 9);
 
+    ub = algo.upper_bound(r, 0);
+    assert(ub == 0);
 
-ub = algo.upper_bound(r, 0);
-assert(ub == 0);
+    ub = algo.upper_bound(r, 10);
+    assert(ub == 2);
 
-ub = algo.upper_bound(r, 10);
-assert(ub == 2);
+    ub = algo.upper_bound(r, 20);
+    assert(ub == 4);
 
-ub = algo.upper_bound(r, 20);
-assert(ub == 4);
+    ub = algo.upper_bound(r, 50);
+    assert(ub == 7);
 
-ub = algo.upper_bound(r, 50);
-assert(ub == 7);
+    ub = algo.upper_bound(r, 70);
+    assert(ub == 7);
 
-ub = algo.upper_bound(r, 70);
-assert(ub == 7);
+    ub = algo.upper_bound(r, 100);
+    assert(ub == 11);
 
-ub = algo.upper_bound(r, 100);
-assert(ub == 11);
+    ub = algo.upper_bound(r, 101);
+    assert(ub == 12);
 
-ub = algo.upper_bound(r, 101);
-assert(ub == 12);
-
-ub = algo.upper_bound(r, 102);
-assert(ub == 12);
-
-
-var r1 = [ 1, 2, 3, 3, 3, 3, 3, 4, 5, 10, 10, 1011, 1011, 1011, 1011, 2002 ];
-
-lb = algo.lower_bound(r1, 0);
-assert(lb == 0);
-
-lb = algo.lower_bound(r1, 1);
-assert(lb == 0);
-
-lb = algo.lower_bound(r1, 3);
-assert(lb == 2);
-
-lb = algo.lower_bound(r1, 2002);
-assert(lb == 15);
-
-lb = algo.lower_bound(r1, 2003);
-assert(lb == 16);
-
-
-algo.heap_sort(r, algo.cmp_gt);
-assert(algo.is_sorted(r, algo.cmp_gt), "Not sorted");
-
-var r2 = [ 782, 1, 21, 3, 11, 29, 23, 22, 829, 91, 90, 89, 45, 46, 47, 19, 201, 191 ];
-var pidx = algo.partition(r2, 12);
-assert(pidx == 8);
-
-var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 3);
-assert(pidx == 16);
-
-var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 5);
-assert(pidx == 14);
-
-var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 20);
-assert(pidx == 5);
-
-var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 0);
-assert(pidx == 9);
-
-var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
-var pidx = algo.partition(r2, 9);
-assert(pidx == 20);
+    ub = algo.upper_bound(r, 102);
+    assert(ub == 12);
 
 
+    var r1 = [ 1, 2, 3, 3, 3, 3, 3, 4, 5, 10, 10, 1011, 1011, 1011, 1011, 2002 ];
 
-var mmh = new algo.MinMaxHeap(algo.cmp_lt, r2);
+    lb = algo.lower_bound(r1, 0);
+    assert(lb == 0);
 
-assert(mmh.max == 1992);
-assert(mmh.min == -2);
+    lb = algo.lower_bound(r1, 1);
+    assert(lb == 0);
 
-var sorted_mmh = [ ];
-while (mmh.length > 0) {
+    lb = algo.lower_bound(r1, 3);
+    assert(lb == 2);
+
+    lb = algo.lower_bound(r1, 2002);
+    assert(lb == 15);
+
+    lb = algo.lower_bound(r1, 2003);
+    assert(lb == 16);
+
+    var r2 = [ 782, 1, 21, 3, 11, 29, 23, 22, 829, 91, 90, 89, 45, 46, 47, 19, 201, 191 ];
+    var pidx = algo.partition(r2, 12);
+    assert(pidx == 8);
+
+    var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+    var pidx = algo.partition(r2, 3);
+    assert(pidx == 16);
+
+    var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+    var pidx = algo.partition(r2, 5);
+    assert(pidx == 14);
+
+    var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+    var pidx = algo.partition(r2, 20);
+    assert(pidx == 5);
+
+    var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+    var pidx = algo.partition(r2, 0);
+    assert(pidx == 9);
+
+    var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+    var pidx = algo.partition(r2, 9);
+    assert(pidx == 20);
+}
+
+
+function test_min_max_heap() {
+    var r2 = [10, 33, 19, 102, 9, 99, 999, 1932, 102, 1992, 8, 88, 888, 88, 8, 0, -1, -2, -2, -1, 0];
+    var mmh = new algo.MinMaxHeap(algo.cmp_lt, r2);
+
+    assert(mmh.max == 1992);
+    assert(mmh.min == -2);
+
+    var sorted_mmh = [ ];
+    while (mmh.length > 0) {
 	sorted_mmh.push(mmh.pop_max());
-}
+    }
 
-assert(algo.is_sorted(sorted_mmh, algo.cmp_gt));
+    assert(algo.is_sorted(sorted_mmh, algo.cmp_gt));
 
 
-mmh = new algo.MinMaxHeap(algo.cmp_lt, r2);
-sorted_mmh = [ ];
-while (mmh.length > 0) {
+    mmh = new algo.MinMaxHeap(algo.cmp_lt, r2);
+    sorted_mmh = [ ];
+    while (mmh.length > 0) {
 	sorted_mmh.push(mmh.pop_min());
+    }
+
+    assert(algo.is_sorted(sorted_mmh, algo.cmp_lt));
 }
 
-assert(algo.is_sorted(sorted_mmh, algo.cmp_lt));
+function test_trie() {
+    var t = new algo.Trie();
+    t.insert('alros', 'algos', 'alg', 'GET', 'GEL', 'POST');
 
-var t = new algo.Trie();
-t.insert('alros', 'algos', 'alg', 'GET', 'GEL', 'POST');
-
-var tiv = [ ];
-t.forEach(function(e, i) {
+    var tiv = [ ];
+    t.forEach(function(e, i) {
 	tiv.push({ value: e, index: i });
-});
+    });
 
-assert(tiv[0].value === "GEL");
-assert(tiv[0].index === 0);
+    assert(tiv[0].value === "GEL");
+    assert(tiv[0].index === 0);
 
-assert(tiv[1].value === "GET");
-assert(tiv[1].index === 1);
+    assert(tiv[1].value === "GET");
+    assert(tiv[1].index === 1);
 
-assert(tiv[2].value === "POST");
-assert(tiv[2].index === 2);
+    assert(tiv[2].value === "POST");
+    assert(tiv[2].index === 2);
 
-assert(tiv[3].value === "alg");
-assert(tiv[3].index === 3);
+    assert(tiv[3].value === "alg");
+    assert(tiv[3].index === 3);
 
-assert(tiv[4].value === "algos");
-assert(tiv[4].index === 4);
+    assert(tiv[4].value === "algos");
+    assert(tiv[4].index === 4);
 
-assert(tiv[5].value === "alros");
-assert(tiv[5].index === 5);
+    assert(tiv[5].value === "alros");
+    assert(tiv[5].index === 5);
 
+    // console.log(util.inspect(t, false, 10));
+    assert(t.length == 6);
 
-// console.log(util.inspect(t, false, 10));
-assert(t.length == 6);
+    assert(t.exists('GE') == false);
+    assert(t.exists('GET') == true);
+    assert(t.exists('') == false);
 
-assert(t.exists('GE') == false);
-assert(t.exists('GET') == true);
-assert(t.exists('') == false);
+    assert(t.remove('GE') == false);
+    assert(t.remove('GET') == true);
 
-assert(t.remove('GE') == false);
-assert(t.remove('GET') == true);
+    // console.log("Trie length:", t.length);
+    assert(t.length == 5);
 
-// console.log("Trie length:", t.length);
-assert(t.length == 5);
+    assert(t.exists('GE') == false);
+    assert(t.exists('GET') == false);
+    assert(t.exists('GEL') == true);
 
-assert(t.exists('GE') == false);
-assert(t.exists('GET') == false);
-assert(t.exists('GEL') == true);
+    // console.log(util.inspect(t, false, 10));
 
-// console.log(util.inspect(t, false, 10));
+    assert(t.remove_many('alros', 'algos', 'alg', 'GET', 'GEL', 'POST') == 5);
 
-assert(t.remove_many('alros', 'algos', 'alg', 'GET', 'GEL', 'POST') == 5);
+    // console.log(util.inspect(t, false, 10));
 
-// console.log(util.inspect(t, false, 10));
+    assert(t.length == 0);
+}
 
-assert(t.length == 0);
+test_queue();
+test_min_heap();
+test_max_heap();
+test_functions();
+test_min_max_heap();
+test_trie();
 
 function test_set(n) {
     var set = null;
