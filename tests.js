@@ -547,9 +547,9 @@ function test_stable_partition() {
     // 2 elements with the same key (30 in this case) should not
     // change their relative positions.
     var a = [ [ 30, 0 ], [ 20, 1 ], [ 20, 2 ],
-              [ 1, 4 ],  [ 5, 5 ],  [ 11, 6 ],
-              [ 30, 7 ], [ 40, 8 ], [ 10, 9 ] ];
-    algo.stable_partition(a, 7, function(lhs, rhs) {
+              [ 1, 3 ],  [ 5, 4 ],  [ 11, 5 ],
+              [ 30, 6 ], [ 40, 7 ], [ 10, 8 ] ];
+    var ret_idx = algo.stable_partition(a, 6, function(lhs, rhs) {
         return lhs[0] < rhs[0];
     });
     for (var i = 0; i < a.length; ) {
@@ -566,6 +566,7 @@ function test_stable_partition() {
         }
         i = j;
     }
+    assert(ret_idx == 6);
 }
 
 test_stable_partition();

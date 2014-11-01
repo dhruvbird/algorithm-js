@@ -1474,30 +1474,36 @@ function partition(range, pivot_index, cmp_lt) {
 // Space Complexity: O(n)
 //
 // The input array 'range' is partitioned in-place
+//
+// Returns the index into 'range' where the 2nd half of the partition
+// begins
+//
 function stable_partition(range, pivot_index, cmp_lt) {
-	var p1 = [ ];
-	var p2 = [ ];
-
+    var dest = [ ];
 	assert(pivot_index < range.length);
 
-	// Swap the pivot with the 1st element of the range
-	_swap(range, 0, pivot_index);
-	var pivot = range[0];
+	var pivot = range[pivot_index];
 
-	for (var i = 0; i < range.length; ++i) {
-		// range[i] > pivot  -> p2
-		// range[i] <= pivot -> p1
-		(cmp_lt(pivot, range[i]) ? p2 : p1).push(range[i]);
+    var i;
+    // Add all elements < pivot to 'dest'
+	for (i = 0; i < range.length; ++i) {
+        if (cmp_lt(range[i], pivot)) {
+            dest.push(range[i]);
+        }
+	}
+    var ret_idx = dest.length;
+    // Add all elements >= pivot to 'dest'
+	for (i = 0; i < range.length; ++i) {
+        if (!cmp_lt(range[i], pivot)) {
+            dest.push(range[i]);
+        }
 	}
 
-	// Invariant: p1.length > 0
-	// console.log("p1.length:", p1.length);
-	assert(p1.length > 0);
+	assert(dest.length == range.length);
 
-	_swap(p1, 0, p1.length - 1);
 	range.splice(0, range.length);
-	range.push.apply(range, p1.concat(p2));
-	return p1.length - 1;
+	range.push.apply(range, dest);
+	return ret_idx;
 }
 
 // Time Complexity:  O(n)
