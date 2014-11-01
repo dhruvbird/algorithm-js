@@ -542,3 +542,30 @@ function test_randomized_select() {
 }
 
 test_randomized_select();
+
+function test_stable_partition() {
+    // 2 elements with the same key (30 in this case) should not
+    // change their relative positions.
+    var a = [ [ 30, 0 ], [ 20, 1 ], [ 20, 2 ],
+              [ 1, 4 ],  [ 5, 5 ],  [ 11, 6 ],
+              [ 30, 7 ], [ 40, 8 ], [ 10, 9 ] ];
+    algo.stable_partition(a, 7, function(lhs, rhs) {
+        return lhs[0] < rhs[0];
+    });
+    for (var i = 0; i < a.length; ) {
+        var j;
+        for (j = i + 1; j < a.length; ++j) {
+            if (a[i][0] != a[j][0]) break;
+        }
+        if (!algo.is_sorted(algo.range(a, i, j), function(lhs, rhs) {
+            return lhs[1] < rhs[1];
+        })) {
+            console.log("In partitioned array:\n", a);
+            console.log("\nThis is not a stable range:\n", algo.range(a, i, j));
+            assert(false);
+        }
+        i = j;
+    }
+}
+
+test_stable_partition();

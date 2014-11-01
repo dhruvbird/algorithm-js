@@ -1472,6 +1472,8 @@ function partition(range, pivot_index, cmp_lt) {
 
 // Time Complexity:  O(n)
 // Space Complexity: O(n)
+//
+// The input array 'range' is partitioned in-place
 function stable_partition(range, pivot_index, cmp_lt) {
 	var p1 = [ ];
 	var p2 = [ ];
