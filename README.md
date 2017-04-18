@@ -1,9 +1,9 @@
-##Data Structures & Algorithms for Javascript
+## Data Structures & Algorithms for Javascript
 
     var algo = require('algorithm');
 
 
-###Data Structures:
+### Data Structures:
 1. Queue/FIFO Operations & Properties:
     * (constructor) pushes every argument that is passed into the queue
     * push(1, 2, 3, 4): Pushes 4 integers into the queue - O(1)
@@ -108,7 +108,7 @@ a comparator and an existing array:
         * http://closure-library.googlecode.com/svn/docs/closure_goog_structs_avltree.js.source.html
 
 
-###Algorithms:
+### Algorithms:
 1. range(range/array, start index, one after end index): Retuns a range of 
 values from the passed array. The returned range is also an array. O(n)
 
@@ -164,7 +164,7 @@ WILL be modified. This is an unstable sort - O(n log n)
 complexity of this function is O(n).
 
 
-###Comparators:
+### Comparators:
 All Comparators return either true or false only.
 
 1. cmp_lt(lhs, rhs): Returns whatever lhs < rhs returns
